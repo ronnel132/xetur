@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>| XETUR |</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class=page>
+            <div class=navbar>
+                <h1>xetur</h1>
+                <ul class=signon>
+                {% if not session.username %}
+                    <li><a href="{{ url_for('login') }}">login</a></li>   
+                    <li><a href="{{ url_for('register') }}">register</a></li>
+                {% endif %}
+                </ul>
+                <ul class=topics>
+                {% for topic in g.topics %}
+                    <li><a href="{{ url_for('branch', topic=topic) }}">{{ topic }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% block body %}{% endblock %}
+        </div>
+    </body>
+</html>
+

@@ -1,0 +1,26 @@
+html { background: white; }
+
+.page { font-family: Helvetica; }
+
+.page h1 {  font-weight: lighter;
+            font-size: 50px;
+            text-align: center;
+            color: black;
+            margin: 0.0cm 0.0cm;
+            padding: 0.0cm 0.0cm;
+        }
+
+.navbar { background: LightBlue; padding-bottom: 0.5em }
+
+.page li { display: inline; margin: 0.5em}
+
+.page ul { margin: 0.0em 0.5em; padding: 0.0em; }
+
+.signon {text-align: right; }
+
+.topics {text-align: center; padding-bottom: 0.4em}
+
+.page li a:link {text-decoration: none; color: white }
+
+.page li a:visited {text-decoration: none; color: purple }
+
