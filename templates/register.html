@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class=register>
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+        <h1>CREATE A NEW ACCOUNT</h1>
+        <form action="{{ url_for('register') }}" method=post>
+            username:<br><input type="text" name="username"><br>
+            password:<br><input type="password" name="password"><br>
+            confirm password:<br><input type="password" name="confirm_password"><br>
+            <br><input type="submit" value="SUBMIT">
+        </form>
+    </div>
+{% endblock %}
+
+

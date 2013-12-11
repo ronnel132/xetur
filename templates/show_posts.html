@@ -1,0 +1,16 @@
+<div class=posts>
+    <ul>
+    {% for post in posts %}
+        <li>
+            <div class=post>
+                <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
+                    <h1>{{ post.subject }}</h1>
+                </a>
+                <p>{{ post.upvotes }} Upvotes. {{ post.downvotes }} Downvotes.</p>
+            </div>
+        </li>
+    {% else %}
+        <p class=noposts>No posts yet... Unbelievable</p>
+    {% endfor %}
+    </ul>
+</div>

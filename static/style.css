@@ -2,7 +2,7 @@ html { background: white; }
 
 .page { font-family: Helvetica; }
 
-.page h1 {  font-weight: lighter;
+.logo {  font-weight: lighter;
             font-size: 50px;
             text-align: center;
             color: black;
@@ -10,9 +10,9 @@ html { background: white; }
             padding: 0.0cm 0.0cm;
         }
 
-.navbar { background: LightBlue; padding-bottom: 0.5em }
+.navbar { background: LightBlue; padding: 0.5em 0.5em }
 
-.page li { display: inline; margin: 0.5em}
+.navbar li { display: inline; margin: 0.5em}
 
 .page ul { margin: 0.0em 0.5em; padding: 0.0em; }
 
@@ -24,3 +24,23 @@ html { background: white; }
 
 .page li a:visited {text-decoration: none; color: purple }
 
+.posts {  }
+
+.post { margin: 0.5em 0.5em; text-align: left}
+
+.post h1 { font-size: 25px }
+
+.noposts { text-align: center }
+.error { text-align: center; color: red }
+
+.register { background: #E0E0E0; margin-top: 2em; margin-left: 20em; 
+            margin-right: 20em; padding: 2em; border-radius: 14px
+           }
+
+.register h1 { font-size: 18px; text-align: center; }
+
+.register form { text-align: center; }
+
+.subranch_header { background: #CCFFFF }
+
+.subranch_header h1 { color: #0099FF; padding-left: 0.2em }

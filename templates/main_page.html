@@ -1,13 +1,4 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class=main_description>
-        <ul>
-        {% for post in posts %}
-            <li>
-                <div class=post>
-                    
-                </div>
-            </li>
-        </ul>
-    </div>
+    {% include 'show_posts.html' %}
 {% endblock %}

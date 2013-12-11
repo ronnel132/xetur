@@ -7,11 +7,13 @@
     <body>
         <div class=page>
             <div class=navbar>
-                <h1>xetur</h1>
+                <h1 class=logo>xetur</h1>
                 <ul class=signon>
                 {% if not session.username %}
                     <li><a href="{{ url_for('login') }}">login</a></li>   
                     <li><a href="{{ url_for('register') }}">register</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('logout') }}">logout</a></li>
                 {% endif %}
                 </ul>
                 <ul class=topics>

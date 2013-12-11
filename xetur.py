@@ -44,15 +44,14 @@ def teardown_request(exception):
 def parse_posts(posts):
     parsed = [dict(post_id=post[0], topic=post[1], poster=post[2], \
     subject=post[3], body=post[4], upvotes=int(post[5]), \
-    downvotes=int(post[6]), posted_at=row[7]) for post in posts]
-    if len(parsed) == 1:
-        return parsed[0]
+    downvotes=int(post[6]), posted_at=post[7]) for post in posts]
     return parsed
 
 @app.route('/')
 def main_page():
     cur = g.db.execute('select * from posts limit 20')
     recent_posts = cur.fetchall()
+    recent_posts = parse_posts(recent_posts) 
     return render_template('main_page.html', posts=recent_posts)
 
 def parse_time(timestamp):
@@ -70,7 +69,7 @@ def branch(topic):
     cur = g.db.execute('select * from posts where topic = ? order by posted_at desc limit 20', [topic])
     posts = parse_posts(cur.fetchall())
 #     posts = reorder_by_votes(posts)
-    return render_template('show_topic.html', posts=posts)
+    return render_template('show_topic.html', topic=topic, posts=posts)
 
 @app.route('/x/<topic>/<post_id>')
 def show_post(topic, post_id):
@@ -91,6 +90,7 @@ def comment(topic, post_id):
     if request.form['text'] != None:
         g.db.execute('insert into comments (post_id, poster, body) values (?, ?, ?)', \
         [post_id, session['username'], request.form['text']])
+        g.db.commit()
     return redirect(url_for('show_post', topic=topic, post_id=post_id))
 
 @app.route('/x/<topic>/post', methods=['POST'])
@@ -100,6 +100,7 @@ def post(topic):
     if request.form['subject'] != None and request.form['body'] != None:
         g.db.execute('insert into posts (topic, poster, subject, body) values (?, ?, ?, ?)', \
         [topic, session['username'], request.form['subject'], request.form['body']])
+        g.db.commit()
     return redirect(url_for('branch', topic=topic))
 
 def generate_salt():
@@ -129,10 +130,7 @@ def login():
             if password_hash(request.form['password'], salt) == stored_password_hash:
                 session['username'] = raw_user_details[0]
                 return redirect(url_for('main_page'))
-            else:
-                error = "Invalid password"
-        else:
-            error = "Invalid username"
+        error = "Username or Password Invalid"
     return render_template('login.html', error=error)
 
 @app.route('/logout')
@@ -151,19 +149,21 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
-        username_exists = g.db.execute('select ? in (select topic from topics)', [username]).fetchone()[0]
+        username_exists = g.db.execute('select ? in (select username from users)', [username]).fetchone()[0]
         if username_exists:
             error = "Username already in use"
+            print error
         else:
             # Username is valid
             if password != confirm_password:
                 error = "Invalid password"
-            elif len(password) < 5:
+            elif len(password) < 6:
                 error = "Password must be at least 6 characters"
             else:
                 salt = generate_salt()
                 hashed_password = password_hash(password, salt)
                 g.db.execute('insert into users (username, salt, password_hash) values (?, ?, ?)', [username, salt, hashed_password])
+                g.db.commit()
                 return redirect(url_for('login'))
     return render_template('register.html', error=error)
 
