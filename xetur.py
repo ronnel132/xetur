@@ -93,15 +93,19 @@ def comment(topic, post_id):
         g.db.commit()
     return redirect(url_for('show_post', topic=topic, post_id=post_id))
 
-@app.route('/x/<topic>/post', methods=['POST'])
+@app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
     if g.username == None:
         abort(401)
-    if request.form['subject'] != None and request.form['body'] != None:
-        g.db.execute('insert into posts (topic, poster, subject, body) values (?, ?, ?, ?)', \
-        [topic, session['username'], request.form['subject'], request.form['body']])
-        g.db.commit()
-    return redirect(url_for('branch', topic=topic))
+    error = None
+    if request.method == 'POST':
+        if request.form['subject'] != None and request.form['body'] != None:
+            g.db.execute('insert into posts (topic, poster, subject, body) values (?, ?, ?, ?)', \
+            [topic, session['username'], request.form['subject'], request.form['body']])
+            g.db.commit()
+            return redirect(url_for('branch', topic=topic))
+        error = "Invalid Post: Posts Must have Subject and Body" 
+    return render_template('post.html', error=error)
 
 def generate_salt():
     chars = []

@@ -24,7 +24,7 @@ html { background: white; }
 
 .page li a:visited {text-decoration: none; color: purple }
 
-.posts {  }
+.posts { }
 
 .post { margin: 0.5em 0.5em; text-align: left}
 
@@ -41,6 +41,13 @@ html { background: white; }
 
 .register form { text-align: center; }
 
-.subranch_header { background: #CCFFFF }
+.subbranch_header { background: #CCFFFF; margin: 6px 0px; 
+                    border-radius:14px; }
 
-.subranch_header h1 { color: #0099FF; padding-left: 0.2em }
+.subbranch_header h1 { color: #0099FF; padding-top: 0.4em; 
+                       padding-bottom: 0.2em; padding-left: 0.2em; }
+
+#topic_content { margin-right: 20% }
+
+#topic_sidebar { background: gray; float: right; width: 20%;
+                height: 400px}

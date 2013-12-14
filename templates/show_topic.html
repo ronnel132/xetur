@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class=subranch_header>
+    <div class=subbranch_header>
         <h1>{{ topic }}</h1>
     </div>
-    {% include "show_posts.html" %}
+    <div id=topic_container>
+        <div id=topic_sidebar></div>
+        <div id=topic_content>
+            {% include "show_posts.html" %}
+        </div>
+    </div>
 {% endblock %}
