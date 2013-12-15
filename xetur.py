@@ -49,7 +49,7 @@ def parse_posts(posts):
 
 @app.route('/')
 def main_page():
-    cur = g.db.execute('select * from posts limit 20')
+    cur = g.db.execute('select * from posts order by posted_at desc limit 20')
     recent_posts = cur.fetchall()
     recent_posts = parse_posts(recent_posts) 
     return render_template('main_page.html', posts=recent_posts)
@@ -87,7 +87,7 @@ def show_post(topic, post_id):
 def comment(topic, post_id):
     if g.username == None:
         abort(401)
-    if request.form['text'] != None:
+    if request.form['text'] != "":
         g.db.execute('insert into comments (post_id, poster, body) values (?, ?, ?)', \
         [post_id, session['username'], request.form['text']])
         g.db.commit()
@@ -99,13 +99,13 @@ def post(topic):
         abort(401)
     error = None
     if request.method == 'POST':
-        if request.form['subject'] != None and request.form['body'] != None:
+        if request.form['subject'] != "" and request.form['body'] != "":
             g.db.execute('insert into posts (topic, poster, subject, body) values (?, ?, ?, ?)', \
             [topic, session['username'], request.form['subject'], request.form['body']])
             g.db.commit()
             return redirect(url_for('branch', topic=topic))
         error = "Invalid Post: Posts Must have Subject and Body" 
-    return render_template('post.html', error=error)
+    return render_template('post.html', topic=topic, error=error)
 
 def generate_salt():
     chars = []
@@ -156,7 +156,6 @@ def register():
         username_exists = g.db.execute('select ? in (select username from users)', [username]).fetchone()[0]
         if username_exists:
             error = "Username already in use"
-            print error
         else:
             # Username is valid
             if password != confirm_password:

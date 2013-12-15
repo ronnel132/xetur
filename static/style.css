@@ -20,15 +20,18 @@ html { background: white; }
 
 .topics {text-align: center; padding-bottom: 0.4em}
 
-.page li a:link {text-decoration: none; color: white }
+.navbar li a:link {text-decoration: none; color: white }
 
-.page li a:visited {text-decoration: none; color: purple }
+.navbar li a:visited {text-decoration: none; color: purple }
 
 .posts { }
 
-.post { margin: 0.5em 0.5em; text-align: left}
+.branch_post { margin: 0.5em 0.5em; text-align: left;
+               border-style: solid; border-width: 1px}
 
-.post h1 { font-size: 25px }
+.branch_post h1 { padding-left: 10px; font-size: 20px; text-decoration:none }
+
+.branch_post p { padding-left: 10px; }
 
 .noposts { text-align: center }
 .error { text-align: center; color: red }
@@ -50,4 +53,6 @@ html { background: white; }
 #topic_content { margin-right: 20% }
 
 #topic_sidebar { background: gray; float: right; width: 20%;
-                height: 400px}
+                height: 400px; margin-bottom: 100px }
+
+#topic_post { text-align: center; }

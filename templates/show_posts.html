@@ -1,7 +1,7 @@
 <ul>
 {% for post in posts %}
     <li>
-        <div class=post>
+        <div class=branch_post>
             <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
                 <h1>{{ post.subject }}</h1>
             </a>
