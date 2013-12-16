@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class=subbranch_header>
+        <h1>{{ topic }}</h1>
+    </div>
+    <div class=display_post>
+        <h1>{{ post.subject }}</h1>
+        <p>{{ post.body }}</p>
+    </div>
+    <div class=comment_block>
+        <ul>
+        {% for comment in comments %}
+            <li>{{ comment.body }}</li>
+        {% else %}
+            <li>No comments yet.</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

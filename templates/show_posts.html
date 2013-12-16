@@ -3,7 +3,7 @@
     <li>
         <div class=branch_post>
             <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
-                <h1>{{ post.subject }}</h1>
+                <p>{{ post.subject }}</p>
             </a>
             <p>{{ post.upvotes }} Upvotes. {{ post.downvotes }} Downvotes.</p>
         </div>
