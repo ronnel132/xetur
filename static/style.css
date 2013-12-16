@@ -24,16 +24,17 @@ html { background: white; }
 
 .navbar li a:visited {text-decoration: none; color: purple }
 
-.posts { }
-
-.branch_post { margin: 0.5em 0.5em; text-align: left;
+.branch_post { margin: 0.5em 0.0em; margin-right: 0.6em; text-align: left;
                border-style: solid; border-width: 1px}
 
-.branch_post h1 { padding-left: 10px; font-size: 20px; text-decoration:none }
+.branch_post p { padding-left: 10px; font-size: 15px; }
 
-.branch_post p { padding-left: 10px; }
+.branch_post a:link { text-decoration: none }
+
+.branch_post a:visited { text-decoration: none }
 
 .noposts { text-align: center }
+
 .error { text-align: center; color: red }
 
 .register { background: #E0E0E0; margin-top: 2em; margin-left: 20em; 
@@ -50,9 +51,13 @@ html { background: white; }
 .subbranch_header h1 { color: #0099FF; padding-top: 0.4em; 
                        padding-bottom: 0.2em; padding-left: 0.2em; }
 
+#topic_container { margin-top: 0.0em; } 
+
 #topic_content { margin-right: 20% }
 
+#topic_content ul { list-style-type: none; }
+
 #topic_sidebar { background: gray; float: right; width: 20%;
-                height: 400px; margin-bottom: 100px }
+                height: 400px; margin-bottom: 100px; }
 
 #topic_post { text-align: center; }

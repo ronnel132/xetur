@@ -64,8 +64,6 @@ def reorder_by_votes(lst):
     
 @app.route('/x/<topic>')
 def branch(topic):
-    if topic == None:
-        return redirect(url_for('main_page'))
     cur = g.db.execute('select * from posts where topic = ? order by posted_at desc limit 20', [topic])
     posts = parse_posts(cur.fetchall())
 #     posts = reorder_by_votes(posts)
@@ -73,15 +71,13 @@ def branch(topic):
 
 @app.route('/x/<topic>/<post_id>')
 def show_post(topic, post_id):
-    if topic == None:
-        return redirect(url_for('main_page'))
     cur1 = g.db.execute('select * from comments where post_id=? order by posted_at desc', [post_id])
     cur2 = g.db.execute('select * from posts where post_id=?', [post_id])
     comments = [dict(comment_id=row[0], post_id=row[1], poster=row[2], \
     body=row[3], upvotes=int(row[4]), downvotes=int(row[5]), posted_at=parse_time(row[6])) for row in cur1.fetchall()]
     post = parse_posts(cur2.fetchall())
 #     comments = reorder_by_votes(comments)
-    return render_template('show_post.html', comments=comments, post=post)
+    return render_template('show_post.html', topic=topic, comments=comments, post=post)
 
 @app.route('/x/<topic>/<post_id>/comment', methods=['POST'])
 def comment(topic, post_id):
@@ -92,6 +88,7 @@ def comment(topic, post_id):
         [post_id, session['username'], request.form['text']])
         g.db.commit()
     return redirect(url_for('show_post', topic=topic, post_id=post_id))
+
 
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
@@ -171,4 +168,4 @@ def register():
     return render_template('register.html', error=error)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(threaded=True)
