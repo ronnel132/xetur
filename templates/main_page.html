@@ -1,4 +1,26 @@
 {% extends "layout.html" %}
 {% block body %}
-    {% include 'show_posts.html' %}
+    <div class=subbranch_header>
+        <h2>home</h2>
+        <hr class=divider></hr>
+    </div>
+    <div id=topic_container>
+        <div id=topic_sidebar>
+            <p class=sidebar_text_header>
+                What is this?
+            </p>
+            <hr class=sidebar_divider></hr>
+            <p class=sidebar_text>
+                xetur is a small project implemented in Python using a microframework called Flask. It is intended to be a reddit clone, but is obviously not as fully featured (yet).
+            <p>
+            <p class=sidebar_text_header>
+                Can I see the code?
+            </p>
+            <hr class=sidebar_divider></hr>
+            <a href="http://github.com/ronnel132/xetur"><p class=sidebar_text>Of course!</p></a>
+        </div>
+        <div id=topic_content>
+            {% include 'show_posts.html' %}
+        </div>
+    </div>
 {% endblock %}

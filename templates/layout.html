@@ -3,12 +3,13 @@
     <head>
         <title>| XETUR |</title>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+        <link href='http://fonts.googleapis.com/css?family=Nixie+One|Josefin+Sans|Alegreya+Sans' rel='stylesheet' type='text/css'>
     </head>
     <body>
         <div class=page>
             <div class=navbar>
-                <h1 class=logo>xetur</h1>
-                <ul class=signon>
+                <a href="{{ url_for('main_page') }}"><h1 class=logo>xetur</h1></a>
+                    <ul class=signon>
                 {% if not session.username %}
                     <li><a href="{{ url_for('login') }}">login</a></li>   
                     <li><a href="{{ url_for('register') }}">register</a></li>
@@ -16,11 +17,13 @@
                     <li><a href="{{ url_for('logout') }}">logout</a></li>
                 {% endif %}
                 </ul>
-                <ul class=topics>
-                {% for topic in g.topics %}
-                    <li><a href="{{ url_for('branch', topic=topic) }}">{{ topic }}</a></li>
-                {% endfor %}
-                </ul>
+                <div class = topics>
+                    <ul>
+                    {% for topic in g.topics %}
+                        <li><a href="{{ url_for('branch', topic=topic) }}">{{ topic }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
             </div>
             {% block body %}{% endblock %}
         </div>
