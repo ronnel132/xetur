@@ -1,19 +1,24 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class=subbranch_header>
-        <h1>{{ topic }}</h1>
+        <h2>{{ topic }}</h2>
+        <hr class=divider></hr>
     </div>
-    <div class=display_post>
-        <h1>{{ post.subject }}</h1>
-        <p>{{ post.body }}</p>
-    </div>
-    <div class=comment_block>
-        <ul>
-        {% for comment in comments %}
-            <li>{{ comment.body }}</li>
-        {% else %}
-            <li>No comments yet.</li>
-        {% endfor %}
-        </ul>
+    <div class=show_post_wrapper>
+        <div class=display_post>
+            <h3>{{ post.subject }}</h3>
+            <p>{{ post.body }}</p>
+        </div>
+        <hr class=divider></hr>
+        <div class=comment_block>
+            <ul>
+            {% for comment in comments %}
+                <li>{{ comment.body }}</li>
+                <hr class=divider></hr>
+            {% else %}
+                <li>No comments yet.</li>
+            {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock %}

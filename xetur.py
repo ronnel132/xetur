@@ -75,7 +75,7 @@ def show_post(topic, post_id):
     cur2 = g.db.execute('select * from posts where post_id=?', [post_id])
     comments = [dict(comment_id=row[0], post_id=row[1], poster=row[2], \
     body=row[3], upvotes=int(row[4]), downvotes=int(row[5]), posted_at=parse_time(row[6])) for row in cur1.fetchall()]
-    post = parse_posts(cur2.fetchall())
+    post = parse_posts(cur2.fetchall())[0]
 #     comments = reorder_by_votes(comments)
     return render_template('show_post.html', topic=topic, comments=comments, post=post)
 
