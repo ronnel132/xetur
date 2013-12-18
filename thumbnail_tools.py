@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import re
 import requests
 
+# Thumbnail fetcher. Will implement later...
+
 class ThumbnailFetcher:
     imgtypes = ['.jpg', '.gif', '.png']
     def fetch_thumbnail(self, post_id, url):
@@ -18,8 +20,7 @@ class ThumbnailFetcher:
     def __cleanurl(self, url):
         return ('http://' + url) if 'http://' not in url else url
     def __imgur_thumbnail(soup, post_id):
-        for imgtype in imgtypes:
-            if imgtype in 
+        pass
     def __youtube_thumbnail(soup, post_id):
         pass
     def __quickmeme_thumbnail(soup, post_id):
