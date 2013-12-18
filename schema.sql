@@ -21,10 +21,7 @@ create table posts (
     topic text not null references topics(topic),
     poster text not null references users(username),
     subject text not null,
-    body text not null,
-    upvotes integer default 0,
-    downvotes integer default 0,
-    posted_at datetime default current_timestamp
+    body text not null
 );
 
 create table comments (

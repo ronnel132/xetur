@@ -45,13 +45,14 @@ html { background: white }
 
 .error { text-align: center; color: red }
 
-.register { background: #E0E0E0; margin-top: 2em; margin-left: 20em; 
-            margin-right: 20em; padding: 2em; border-radius: 14px
+.post { background: #20BF80; margin-top: 2em; margin-left: 20em; 
+            margin-right: 20em; padding: 2em;
            }
 
-.register h1 { font-size: 18px; text-align: center; }
+.post h1 { font-size: 18px; margin-left:15%; margin-bottom: 1em;
+            font-family: 'Nixie One', cursive;}
 
-.register form { text-align: center; }
+.post form { margin-left: 15%; font-family: 'Alegreya Sans', sans-serif; }
 
 .subbranch_header { margin-top: 1.5em; margin-bottom: 2em }
 
