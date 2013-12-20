@@ -23,4 +23,18 @@
             {% include 'show_posts.html' %}
         </div>
     </div>
+    <div class=nav-buttons>
+        {% if (before != posts_per_page): %}
+        <span class=nextprev>
+            <a href="{{url_for('main_page', before=(before-posts_per_page*2))}}">
+                prev
+            </a>
+        </span>
+        {% endif %}
+        <span class=nextprev>
+            <a href="{{url_for('main_page', before=before)}}">
+                next
+            </a>
+        </span>
+    </div>
 {% endblock %}

@@ -35,7 +35,7 @@ html { background: white }
 
 .post_subject  { padding-top: 1em; padding-left: 10px; font-size: 15px; }
 
-.post_descrip { font-size: 12px; margin-left: 1em; padding-bottom: 0.5em; }
+.post_descrip { float: left; font-size: 12px; margin-left: 1em; padding-bottom: 0.5em; }
 
 .branch_post a:link { text-decoration: none }
 
@@ -79,6 +79,10 @@ html { background: white }
 
 #topic_post { margin-left: 1.2em; margin-top: 1em; margin-bottom: 0.5em }
 
+.nav-buttons { display: block; text-align: center; }
+
+.nextprev { margin: 0.4em 0.4em; }
+
 .sidebar_text_header 
 { color: white; margin-left: 1.2em; margin-right: 1.2em; margin-top: 1em; 
 margin-bottom: 1em; font-family: "Alegreya Sans", sans-serif; color: #400040}
@@ -94,6 +98,9 @@ margin-bottom: 1em; font-family: "Alegreya Sans", sans-serif; color: #400040}
 
 .divider { margin-left: 5%; width: 90%; height: 1px; color: #C8C8C8;
                 background-color: #C8C8C8; border: 0; } 
+
+.blank_divider { margin-left: 5%; width: 90%; height: 1px; color: white;
+                background-color: white; border: 0; }
 
 .display_post { margin-left: 2.5%; margin-right: 2.5%; padding-top: 1em; padding-bottom: 0.5em;}
 

@@ -4,8 +4,35 @@
         <title>| XETUR |</title>
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
         <link href='http://fonts.googleapis.com/css?family=Nixie+One|Josefin+Sans|Alegreya+Sans' rel='stylesheet' type='text/css'>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+        </script>
     </head>
     <body>
+        <script>
+        function upvote(postId, post_number, voteBtn) {
+            $.post('/upvote', {
+                post_id: post_number
+            }).done(function(updated) {
+                $(postId).text(updated['upvotes']);
+            });
+
+            $(voteBtn).click(function(e) {
+                e.preventDefault();
+            });
+        }
+
+        function downvote(postId, post_number, voteBtn) {
+            $.post('/downvote', {
+                post_id: post_number
+            }).done(function(updated) {
+                $(postId).text(updated['downvotes']);
+            });
+
+            $(voteBtn).click(function(e) {
+                e.preventDefault();
+            });
+        }
+        </script>
         <div class=page>
             <div class=navbar>
                 <a href="{{ url_for('main_page') }}"><h1 class=logo>xetur</h1></a>

@@ -5,11 +5,22 @@
             <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
                 <p class=post_subject>{{ post.subject }}</p>
             </a>
-            <p class=post_descrip>{{ post.upvotes }} Upvotes. {{ post.downvotes }} Downvotes.</p>
+            <p class=post_descrip id="post_upvote{{post.post_id}}">{{post.upvotes}}</p>
+            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}');">
+            Upvote
+            </a>
+            <p class=post_descrip id="post_downvote{{post.post_id}}">{{post.downvotes}}</p>
+            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:downvote('#post_downvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}');">
+            Downvote
+            </a>
         </div>
-        <hr class=divider></hr>
+        {% if post != posts[-1] %}
+            <hr class=divider></hr>
+        {% else %}
+            <hr class=blank_divider></hr>
+        {% endif %}
     </li>
 {% else %}
-    <p class=noposts>No posts yet :(</p>
+    <p class=noposts>No Más</p>
 {% endfor %}
 </ul>

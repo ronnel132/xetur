@@ -6,7 +6,7 @@ import sqlite3
 import time
 from contextlib import closing
 from datetime import datetime
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, jsonify
 from time import mktime
 
 # Initialize the app and set our configuration
@@ -60,11 +60,17 @@ def fetch_post(post_id):
     return post
 
 @app.route('/')
-def main_page():
-    post_ids = r_server.zrevrange('all:posts', 0, app.config['POSTS_PER_PAGE'] - 1)
+@app.route('/before=<before>')
+def main_page(before=None):
+    if before == None:
+        post_ids = r_server.zrevrange('all:posts', 0, app.config['POSTS_PER_PAGE'] - 1)
+        before = app.config['POSTS_PER_PAGE']
+    else:
+        post_ids = r_server.zrevrange('all:posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
+        before = int(before) + app.config['POSTS_PER_PAGE']
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts) 
-    return render_template('main_page.html', posts=posts)
+    return render_template('main_page.html', posts=posts, before=before, posts_per_page=app.config['POSTS_PER_PAGE'])
 
 def parse_time(timestamp):
     seconds = mktime(datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple())
@@ -72,11 +78,17 @@ def parse_time(timestamp):
 
 # 'branches' are the equivalent of subreddits
 @app.route('/x/<topic>')
-def branch(topic):
-    post_ids = r_server.zrange(topic + ":posts", 0, app.config['POSTS_PER_PAGE'] - 1)
+@app.route('/x/<topic>/before=<before>')
+def branch(topic, before=None):
+    if before == None:
+        post_ids = r_server.zrange(topic + ":posts", 0, app.config['POSTS_PER_PAGE'] - 1)
+        before = app.config['POSTS_PER_PAGE']
+    else:
+        post_ids = r_server.zrevrange(topic + ':posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
+        before = int(before) + app.config['POSTS_PER_PAGE']
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
-    return render_template('show_topic.html', topic=topic, posts=posts)
+    return render_template('show_topic.html', topic=topic, posts=posts, before=before, posts_per_page=app.config['POSTS_PER_PAGE'])
 
 @app.route('/x/<topic>/<post_id>')
 def show_post(topic, post_id):
@@ -125,6 +137,19 @@ def post(topic):
         error = "Invalid Post: Posts Must have Subject and Body" 
     return render_template('post.html', topic=topic, error=error)
 
+@app.route('/upvote', methods=['POST'])
+def upvote():
+    post_id = str(request.form['post_id'])
+    r_server.incr(post_id + ":upvotes")
+    return jsonify({
+        'upvotes' : r_server.get(post_id + ":upvotes") })
+
+@app.route('/downvote', methods=['POST'])
+def downvote():
+    post_id = str(request.form['post_id'])
+    r_server.incr(post_id + ":downvotes")
+    return jsonify({
+        'downvotes' : r_server.get(post_id + ":downvotes") })
 def generate_salt():
     chars = []
     for i in range(8):
