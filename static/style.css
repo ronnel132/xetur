@@ -1,111 +1,287 @@
-* { margin: 0; padding: 0; }
+* { 
+    margin: 0; 
+    padding: 0; 
+}
 
-html { background: white }
+html { 
+    background: white;
+}
 
-.page { font-family: Helvetica; }
+.page { 
+    font-family: Helvetica; 
+}
 
-.logo {  font-weight: lighter;
-            font-family: 'Josefin Sans', sans-serif; 
-            font-size: 3.75em;
-            text-align: center;
-            color: white;
-            margin-bottom: 0.2em;
-            padding: 0;
-        }
+.logo {  
+    font-weight: lighter;
+    font-family: 'Josefin Sans', sans-serif; 
+    font-size: 3.75em;
+    text-align: center;
+    color: white;
+    margin-bottom: 0.2em;
+    padding: 0;
+}
 
-.navbar a:link { text-decoration: none }
+.navbar a:link { 
+    text-decoration: none;
+}
 
-.navbar a:visited { text-decoration: none }
+.navbar a:visited { 
+    text-decoration: none;
+}
 
-.navbar { background: #008080; padding: 0.2em 0.2em }
+.navbar { 
+    background: #008080; padding: 0.2em 0.2em;
+}
 
-.navbar li { font-size: 13px; display: inline; margin: 0.3em}
+.navbar li { 
+    font-size: 13px; 
+    display: inline; 
+    margin: 0.3em;
+}
 
-.page ul { margin: 0.0em 0.5em; padding: 0.0em; }
+.page ul { 
+    margin: 0.0em 0.5em; 
+    padding: 0.0em; 
+}
 
-.signon {text-align: right; float: right; }
+.signon {
+    text-align: right; 
+    float: right; 
+}
 
-.topics { float: clear; padding-bottom: 0.3em; }
+.topics { 
+    float: clear; 
+    padding-bottom: 0.3em; 
+}
 
-.navbar li a:link {text-decoration: none; color: white }
+.navbar li a:link {
+    text-decoration: none; 
+    color: white; 
+}
 
-.navbar li a:visited {text-decoration: none; color: white }
+.navbar li a:visited {
+    text-decoration: none; 
+    color: white 
+}
 
-.branch_post { margin: 0.5em 0.0em; margin-right: 0.6em; text-align: left; }
+.branch_post { 
+    margin: 0.5em 0.0em; 
+    margin-right: 0.6em; 
+    text-align: left; 
+}
 
-.post_subject  { padding-top: 1em; padding-left: 10px; font-size: 15px; }
+.post_subject { 
+    padding-top: 0.5em; 
+    padding-bottom: 0.5em;
+    padding-left: 10px; 
+    font-size: 1em; 
+}
 
-.post_descrip { float: left; font-size: 12px; margin-left: 1em; padding-bottom: 0.5em; }
+.post_descrip { 
+    float: left; 
+    font-size: 0.7em; 
+    margin-left: 0.5em; 
+    padding-bottom: 0.5em; 
+}
 
-.branch_post a:link { text-decoration: none }
+.branch_post a:link { 
+    text-decoration: none;
+}
 
-.branch_post a:visited { text-decoration: none }
+.branch_post a:visited { 
+    text-decoration: none;
+}
 
-.noposts { text-align: center; padding: 1em 1em;}
+.noposts { 
+    text-align: center; 
+    padding: 1em 1em;
+}
 
-.error { text-align: center; color: red }
+.error { 
+    text-align: center; 
+    color: red;
+}
 
-.post { background: #20BF80; margin-top: 2em; margin-left: 20em; 
-            margin-right: 20em; padding: 2em;
-           }
+.post { 
+    background: #20BF80; 
+    margin-top: 2em; 
+    margin-left: 20em; 
+    margin-right: 20em; 
+    padding: 2em;
+}
 
-.post h1 { font-size: 18px; margin-left:15%; margin-bottom: 1em;
-            font-family: 'Nixie One', cursive;}
+.post h1 { 
+    font-size: 1.8em; 
+    color: white;
+    margin-left:15%; 
+    margin-bottom: 1em;
+    font-family: 'Nixie One', cursive;
+}
 
-.post form { margin-left: 15%; font-family: 'Alegreya Sans', sans-serif; }
+.post form { 
+    margin-left: 15%; 
+    font-family: 'Nixie One', cursive; 
+    font-size: 1.7em;
+    color: white;
+}
 
-.subbranch_header { margin-top: 1.5em; margin-bottom: 2em }
+.post form input {
+    width: 10em;
+    font-size: 0.6em;
+    border-style: None;
+}
 
-.subbranch_header h2 { color: black; margin: 0; padding-top: 0.0em; 
-                       padding-bottom: 0.0em; padding-left: 0.2em; 
-                       text-align: center; margin-bottom: 0.5em;
-                       font-family: 'Nixie One', cursive;}
+.subbranch_header { 
+    margin-top: 1.5em; 
+    margin-bottom: 2em;
+}
 
-#topic_container { margin-top: 0.0em; margin-bottom: 2em; margin-left: 5%;
-                    width: 90%;} 
+.subbranch_header h2 { 
+    color: black; margin: 0; 
+    padding-top: 0.0em; 
+    padding-bottom: 0.0em; 
+    padding-left: 0.2em; 
+    text-align: center; 
+    margin-bottom: 0.5em;
+    font-family: 'Nixie One', cursive;
+}
 
-#topic_content { margin-left: 1%; margin-right: 20%; width: 76.5%;
-                box-shadow: 0 0 40px 1px #C8C8C8; }
+#topic_container { 
+    margin-top: 0.0em; 
+    margin-bottom: 2em; 
+    margin-left: 5%;
+    width: 90%;
+} 
 
-#topic_content ul { list-style-type: none; }
+#topic_content { 
+    margin-left: 1%; 
+    margin-right: 20%; 
+    width: 76.5%;
+    box-shadow: 0 0 40px 1px #C8C8C8; 
+}
 
-#topic_sidebar { float: right; width: 19.5%; background: #20BF80;
-                margin-bottom: 1em; margin-right: 1%; }
+#topic_content ul { 
+    list-style-type: none; 
+}
 
-#topic_sidebar a:link { color: white; text-decoration: none; 
-                        border-radius: 2px; }
+#topic_sidebar { 
+    float: right; 
+    width: 19.5%; 
+    background: #20BF80;
+    margin-bottom: 1em; 
+    margin-right: 1%; 
+}
 
-#topic_sidebar a:visited { color: white; text-decoration: none; }
+#topic_sidebar a:link { 
+    color: white; 
+    text-decoration: none; 
+    border-radius: 2px; 
+}
 
-#topic_post { margin-left: 1.2em; margin-top: 1em; margin-bottom: 0.5em }
+#topic_sidebar a:visited { 
+    color: white; 
+    text-decoration: none; 
+}
 
-.nav-buttons { display: block; text-align: center; }
+.topic_post { 
+    margin-left: 1.2em; 
+    margin-top: 1em; 
+    margin-bottom: 0.5em;
+}
 
-.nextprev { margin: 0.4em 0.4em; }
+.nav-buttons { 
+    display: block; 
+    text-align: center; 
+}
 
-.sidebar_text_header 
-{ color: white; margin-left: 1.2em; margin-right: 1.2em; margin-top: 1em; 
-margin-bottom: 1em; font-family: "Alegreya Sans", sans-serif; color: #400040}
+.nav-buttons {
+    margin-bottom: 1em;
+}
 
-.sidebar_text { color: white; margin-left: 1.2em; margin-right: 1.2em;
-                margin-top: 1em; margin-bottom: 1em; font-size: 0.9em }
+.nextprev { 
+    margin: 0.4em 0.4em; 
+    border-style: solid; 
+    border-width: 1px;
+    padding: 0.2em 0.2em;
+}
 
-.sidebar_divider { margin-left: 10%; width: 80%; height: 1px; color: white;
-                    background-color: white; border: 0; }
+.nextprev a:link {
+    text-decoration: none;
+    color: black;
+}
 
-.show_post_wrapper { margin-left: 20%; width: 60%; background: white;
-                    box-shadow: 0 0 40px 1px #C8C8C8; margin-top: 1em}
+.nextprev a:visited {
+    text-decoration: none;
+    color: black;
+}
 
-.divider { margin-left: 5%; width: 90%; height: 1px; color: #C8C8C8;
-                background-color: #C8C8C8; border: 0; } 
+.sidebar_text_header { 
+    color: white; 
+    margin-left: 1.2em; 
+    margin-right: 1.2em; 
+    margin-top: 1em; 
+    margin-bottom: 0.3em; 
+    font-family: "Alegreya Sans", sans-serif; 
+    color: #400040
+}
 
-.blank_divider { margin-left: 5%; width: 90%; height: 1px; color: white;
-                background-color: white; border: 0; }
+.sidebar_text { 
+    color: white; 
+    margin-left: 1.2em; 
+    margin-right: 1.2em;
+    margin-top: 0.8em; 
+    margin-bottom: 0.5em; 
+    font-size: 0.9em 
+}
 
-.display_post { margin-left: 2.5%; margin-right: 2.5%; padding-top: 1em; padding-bottom: 0.5em;}
+.sidebar_divider { 
+    margin-left: 10%; 
+    width: 80%; 
+    height: 1px; 
+    color: white;
+    background-color: white; 
+    border: 0; 
+}
 
-.display_post h3 { font-family: "Alegreya Sans", sans-serif; }
+.show_post_wrapper { 
+    margin-left: 20%; 
+    width: 60%; 
+    background: white;
+    box-shadow: 0 0 40px 1px #C8C8C8; 
+    margin-top: 1em;
+}
 
-.comment_block { padding-top: 1em; margin-left: 7%; padding-bottom: 1em }
+.divider { 
+    margin-left: 5%; 
+    width: 90%; 
+    height: 1px; 
+    color: #C8C8C8;
+    background-color: #C8C8C8; 
+    border: 0; 
+} 
 
-.comment_block ul {list-style-type: none; }
+.blank_divider { 
+    margin-left: 5%; 
+    width: 90%; 
+    height: 1px; 
+    color: white;
+    background-color: white; 
+    border: 0; 
+}
+
+.display_post { 
+    margin-left: 2.5%; 
+    margin-right: 2.5%; 
+    padding-top: 1em; 
+    padding-bottom: 0.5em;
+}
+
+.comment_block { 
+    padding-top: 1em; 
+    margin-left: 4%; 
+    padding-bottom: 1em;
+}
+
+.comment_block ul {
+    list-style-type: none; 
+}

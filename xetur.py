@@ -6,7 +6,7 @@ import sqlite3
 import time
 from contextlib import closing
 from datetime import datetime
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, jsonify
+from flask import Flask, request, session, g, redirect, url_for, render_template, jsonify
 from time import mktime
 
 # Initialize the app and set our configuration
@@ -102,7 +102,7 @@ def show_post(topic, post_id):
 @app.route('/x/<topic>/<post_id>/comment', methods=['POST'])
 def comment(topic, post_id):
     if g.username == None:
-        abort(401)
+        return redirect(url_for('login')) 
     if request.form['text'] != "":
         g.db.execute('insert into comments (post_id, poster, body) values (?, ?, ?)', \
         [post_id, session['username'], request.form['text']])
@@ -112,7 +112,7 @@ def comment(topic, post_id):
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
     if g.username == None:
-        abort(401)
+        return redirect(url_for('login')) 
     error = None
     if request.method == 'POST':
         if request.form['subject'] != "" and request.form['body'] != "":
