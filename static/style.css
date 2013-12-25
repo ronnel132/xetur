@@ -92,6 +92,14 @@ html {
     text-decoration: none;
 }
 
+#comment_list a:link {
+    text-decoration: none;
+}
+
+#comment_list a:visited {
+    text-decoration: none;
+}
+
 .noposts { 
     text-align: center; 
     padding: 1em 1em;
@@ -276,12 +284,20 @@ html {
     padding-bottom: 0.5em;
 }
 
+.display_post p {
+    margin-top: 0.7em;
+}
+
 .comment_block { 
-    padding-top: 1em; 
+    padding-top: 0.5em; 
     margin-left: 4%; 
     padding-bottom: 1em;
 }
 
 .comment_block ul {
     list-style-type: none; 
+}
+
+.comment_block p {
+    padding: 0.4em 0.0em;
 }

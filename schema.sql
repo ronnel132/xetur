@@ -28,10 +28,7 @@ create table comments (
     comment_id integer primary key autoincrement, 
     post_id integer not null references posts(post_id),
     poster text not null references users(username),
-    body text not null,
-    upvotes integer default 0,
-    downvotes integer default 0,
-    posted_at datetime default current_timestamp
+    body text not null
 );
 
 insert into topics values ('science');

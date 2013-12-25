@@ -11,12 +11,27 @@
         </div>
         <hr class=divider></hr>
         <div class=comment_block>
-            <ul>
+            <form action="javascript:comment('{{post.post_id}}');" method=post>
+                <br>
+                    <textarea rows=5 cols=50 name="comment_text">comment</textarea>
+                </br>
+                <input type="submit" value="save"></input>
+            </form>
+            <br>
+            <ul id=comment_list>
             {% for comment in comments %}
-                <li>{{ comment.body }}</li>
-                <hr class=divider></hr>
-            {% else %}
-                <li>No comments yet.</li>
+                <li>
+                    <p>{{ comment.body }}</p>
+                    <p class=post_descrip id="comment_upvote{{comment.comment_id}}">{{comment.upvotes}}</p>
+                    <a class="post_descrip votebtn{{comment.comment_id}}" href="javascript:upvote('#comment_upvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
+                    Upvote
+                    </a>
+                    <p class=post_descrip id="comment_downvote{{comment.comment_id}}">{{comment.downvotes}}</p>
+                    <a class="post_descrip votebtn{{comment.comment_id}}" href="javascript:downvote('#comment_downvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
+                    Downvote
+                    </a>
+                    <hr class=divider></hr>
+                </li>
             {% endfor %}
             </ul>
         </div>

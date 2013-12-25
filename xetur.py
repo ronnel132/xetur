@@ -49,9 +49,9 @@ def teardown_request(exception):
 
 # Parse posts into a list of dictionaries for easy access to post attributes
 def parse_posts(posts):
-    parsed = [dict(post_id=post[0], topic=post[1], poster=post[2], \
-    subject=post[3], body=post[4], upvotes=r_server.get(str(post[0]) + ":upvotes"),
-    downvotes=r_server.get(str(post[0]) + ":downvotes")) for post in posts]
+    parsed = [dict(post_id=post[0], topic=post[1], poster=post[2], subject=post[3], \
+    body=post[4], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
+    downvotes=r_server.get("post:" + str(post[0]) + ":downvotes")) for post in posts]
     return parsed
 
 # Fetch an individual post based on a unique post_id
@@ -72,10 +72,6 @@ def main_page(before=None):
     posts = parse_posts(raw_posts) 
     return render_template('main_page.html', posts=posts, before=before, posts_per_page=app.config['POSTS_PER_PAGE'])
 
-def parse_time(timestamp):
-    seconds = mktime(datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple())
-    return datetime.fromtimestamp(seconds)
-
 # 'branches' are the equivalent of subreddits
 @app.route('/x/<topic>')
 @app.route('/x/<topic>/before=<before>')
@@ -94,20 +90,34 @@ def branch(topic, before=None):
 def show_post(topic, post_id):
     cur1 = g.db.execute('select * from comments where post_id=?', [post_id])
     cur2 = g.db.execute('select * from posts where post_id=?', [post_id])
+
+    # extract comment list for post from sql and redis servers
     comments = [dict(comment_id=row[0], post_id=row[1], poster=row[2], \
-    body=row[3], upvotes=int(row[4]), downvotes=int(row[5]), posted_at=parse_time(row[6])) for row in cur1.fetchall()]
+    body=row[3], upvotes=r_server.get("comment:" + str(row[0]) + ":upvotes"),\
+    downvotes=r_server.get("comment:" + str(row[0]) + ":downvotes")) \
+    for row in cur1.fetchall()]
+
     post = parse_posts(cur2.fetchall())[0]
     return render_template('show_post.html', topic=topic, comments=comments, post=post)
 
-@app.route('/x/<topic>/<post_id>/comment', methods=['POST'])
-def comment(topic, post_id):
+@app.route('/comment', methods=['POST'])
+def comment():
     if g.username == None:
         return redirect(url_for('login')) 
     if request.form['text'] != "":
+        post_id = request.form['post_id']
+        body = request.form['text']
         g.db.execute('insert into comments (post_id, poster, body) values (?, ?, ?)', \
-        [post_id, session['username'], request.form['text']])
+        [post_id, session['username'], body])
         g.db.commit()
-    return redirect(url_for('show_post', topic=topic, post_id=post_id))
+        comment_id = g.db.execute('select last_insert_rowid()').fetchone()[0]
+        commented = r_server.zadd(str(post_id) + ":comments", comment_id, 0)
+        upvote_set = r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
+        downvote_set = r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
+        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+        return jsonify({ 
+            'success' : commented and upvote_set and downvote_set })
+#     return redirect(url_for('show_post', topic=topic, post_id=post_id))
 
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
@@ -126,10 +136,10 @@ def post(topic):
             # Initial score is 0
             r_server.zadd(topic + ":posts", post_id, 0)
             # Initial number of upvotes and downvotes is zero 
-            r_server.set(str(post_id) + ":upvotes", 0)
-            r_server.set(str(post_id) + ":downvotes", 0)
+            r_server.set("post:" + str(post_id) + ":upvotes", 0)
+            r_server.set("post:" + str(post_id) + ":downvotes", 0)
             # Time of post is now
-            r_server.set(str(post_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+            r_server.set("post:" + str(post_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
             # Store this post and it's score in the all:posts ordered list for fast front-page loads
             r_server.zadd("all:posts", post_id, 0)
 
@@ -139,17 +149,20 @@ def post(topic):
 
 @app.route('/upvote', methods=['POST'])
 def upvote():
-    post_id = str(request.form['post_id'])
-    r_server.incr(post_id + ":upvotes")
+    id = str(request.form['id'])
+    vote_type = request.form['type']
+    r_server.incr(vote_type + ":" + id + ":upvotes")
     return jsonify({
-        'upvotes' : r_server.get(post_id + ":upvotes") })
+        'upvotes' : r_server.get(vote_type + ":" + id + ":upvotes") })
 
 @app.route('/downvote', methods=['POST'])
 def downvote():
-    post_id = str(request.form['post_id'])
-    r_server.incr(post_id + ":downvotes")
+    id = str(request.form['id'])
+    vote_type = request.form['type']
+    r_server.incr(vote_type + ":" + id + ":downvotes")
     return jsonify({
-        'downvotes' : r_server.get(post_id + ":downvotes") })
+        'downvotes' : r_server.get(vote_type + ":" + id + ":downvotes") })
+
 def generate_salt():
     chars = []
     for i in range(8):

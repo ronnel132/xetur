@@ -6,11 +6,11 @@
                 <p class=post_subject>{{ post.subject }}</p>
             </a>
             <p class=post_descrip id="post_upvote{{post.post_id}}">{{post.upvotes}}</p>
-            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}');">
+            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
             Upvote
             </a>
             <p class=post_descrip id="post_downvote{{post.post_id}}">{{post.downvotes}}</p>
-            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:downvote('#post_downvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}');">
+            <a class="post_descrip votebtn{{post.post_id}}" href="javascript:downvote('#post_downvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
             Downvote
             </a>
         </div>
