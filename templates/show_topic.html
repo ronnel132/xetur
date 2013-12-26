@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class=subbranch_header>
-        <h2>{{ topic }}</h2>
+        <a href="{{ url_for('branch', topic=topic) }}">
+            <h2>{{ topic }}</h2>
+        </a
         <hr class=divider></hr>
     </div>
     <div id=topic_container>

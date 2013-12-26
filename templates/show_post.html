@@ -2,18 +2,26 @@
 {% block body %}
     <div class=subbranch_header>
         <h2>{{ topic }}</h2>
-        <hr class=divider></hr>
     </div>
+    <hr class=divider></hr>
     <div class=show_post_wrapper>
         <div class=display_post>
+            {% if post.url != None: %}
+            <a href="{{ post.url }}">
+                <h3>{{ post.subject }}</h3>
+            </a>
+            {% else %}
             <h3>{{ post.subject }}</h3>
+            {% endif %}
+            {% if post.body != None: %}
             <p>{{ post.body }}</p>
+            {% endif %}
         </div>
         <hr class=divider></hr>
         <div class=comment_block>
             <form action="javascript:comment('{{post.post_id}}');" method=post>
                 <br>
-                    <textarea rows=5 cols=50 name="comment_text">comment</textarea>
+                    <textarea rows=5 cols=50 name="comment_text"></textarea>
                 </br>
                 <input type="submit" value="save"></input>
             </form>
@@ -30,8 +38,8 @@
                     <a class="post_descrip votebtn{{comment.comment_id}}" href="javascript:downvote('#comment_downvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
                     Downvote
                     </a>
-                    <hr class=divider></hr>
                 </li>
+                <div class=clear></div>
             {% endfor %}
             </ul>
         </div>

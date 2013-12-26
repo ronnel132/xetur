@@ -6,12 +6,11 @@
     {% endif %}
         <h1>post</h1>
         <form action="{{ url_for('post', topic=topic) }}" method=post>
-            subject/url:<br><input type="text" size=30 name="subject"><br>
-            <br>
-            body:<br><textarea rows=5 cols=40 name="body"></textarea><br>
+            url (optional):<br><input type="text" size=50 name="url"><br>
+            subject/url:<br><input type="text" size=50 name="subject"><br>
+            body:<br><textarea rows=5 cols=50 name="body"></textarea><br>
             <br><input type="submit" value="POST">
         </form>
     </div>
 {% endblock %}
-
 

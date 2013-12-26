@@ -18,10 +18,11 @@ create table users (
 
 create table posts (
     post_id integer primary key autoincrement,
+    url text,
     topic text not null references topics(topic),
     poster text not null references users(username),
     subject text not null,
-    body text not null
+    body text
 );
 
 create table comments (

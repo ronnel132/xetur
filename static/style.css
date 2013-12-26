@@ -3,8 +3,20 @@
     padding: 0; 
 }
 
+* a:link {
+    text-decoration: none;
+}
+
+* a:visited {
+    text-decoration: none;
+}
+
 html { 
     background: white;
+}
+
+.clear {
+    clear: both;
 }
 
 .page { 
@@ -19,14 +31,6 @@ html {
     color: white;
     margin-bottom: 0.2em;
     padding: 0;
-}
-
-.navbar a:link { 
-    text-decoration: none;
-}
-
-.navbar a:visited { 
-    text-decoration: none;
 }
 
 .navbar { 
@@ -55,12 +59,10 @@ html {
 }
 
 .navbar li a:link {
-    text-decoration: none; 
     color: white; 
 }
 
 .navbar li a:visited {
-    text-decoration: none; 
     color: white 
 }
 
@@ -80,24 +82,8 @@ html {
 .post_descrip { 
     float: left; 
     font-size: 0.7em; 
-    margin-left: 0.5em; 
     padding-bottom: 0.5em; 
-}
-
-.branch_post a:link { 
-    text-decoration: none;
-}
-
-.branch_post a:visited { 
-    text-decoration: none;
-}
-
-#comment_list a:link {
-    text-decoration: none;
-}
-
-#comment_list a:visited {
-    text-decoration: none;
+    padding-right: 0.3em;
 }
 
 .noposts { 
@@ -182,13 +168,11 @@ html {
 
 #topic_sidebar a:link { 
     color: white; 
-    text-decoration: none; 
     border-radius: 2px; 
 }
 
 #topic_sidebar a:visited { 
     color: white; 
-    text-decoration: none; 
 }
 
 .topic_post { 
@@ -214,12 +198,10 @@ html {
 }
 
 .nextprev a:link {
-    text-decoration: none;
     color: black;
 }
 
 .nextprev a:visited {
-    text-decoration: none;
     color: black;
 }
 
@@ -259,6 +241,10 @@ html {
     margin-top: 1em;
 }
 
+.show_post_wrapper h3 {
+    margin-left: 2%;
+}
+
 .divider { 
     margin-left: 5%; 
     width: 90%; 
@@ -288,16 +274,22 @@ html {
     margin-top: 0.7em;
 }
 
-.comment_block { 
+.comment_block form { 
     padding-top: 0.5em; 
-    margin-left: 4%; 
-    padding-bottom: 1em;
+    margin-left: 5%; 
+    padding-bottom: 0.2em;
 }
 
 .comment_block ul {
     list-style-type: none; 
 }
 
-.comment_block p {
-    padding: 0.4em 0.0em;
+#comment_list {
+    margin-left: 5%;
+    padding-bottom: 1em;
+    margin-right: 5%;
+}
+
+#comment_list li {
+    float: clear;
 }

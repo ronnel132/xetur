@@ -35,10 +35,7 @@ function comment(postId) {
         var li = document.createElement("li");
         var comment = document.createElement("p");
         comment.innerHTML = $('textarea[name="comment_text"]').val();
-        var hr = document.createElement("hr");
-        hr.className = "divider";
         li.appendChild(comment);
-        li.appendChild(hr);
         ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
     });
 }

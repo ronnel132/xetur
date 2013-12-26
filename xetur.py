@@ -50,9 +50,11 @@ def teardown_request(exception):
 
 # Parse posts into a list of dictionaries for easy access to post attributes
 def parse_posts(posts):
-    parsed = [dict(post_id=post[0], topic=post[1], poster=post[2], subject=post[3], \
-    body=post[4], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
-    downvotes=r_server.get("post:" + str(post[0]) + ":downvotes")) for post in posts]
+    parsed = [dict(post_id=post[0], url=clean_url(post[1]), topic=post[2], poster=post[3], subject=post[4], \
+    body=post[5], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
+    downvotes=r_server.get("post:" + str(post[0]) + ":downvotes"), \
+    comment_count=r_server.zcount(str(post[0])+":comments",-maxint,maxint))\
+    for post in posts]
     return parsed
 
 def parse_comments(comments):
@@ -70,6 +72,11 @@ def fetch_post(post_id):
 def fetch_comment(comment_id):
     comment = g.db.execute('select * from comments where comment_id=?', [int(comment_id)]).fetchone()
     return comment
+
+def clean_url(url):
+    if 'http://' not in url:
+        url = 'http://' + url
+    return url
 
 @app.route('/')
 @app.route('/before=<before>')
@@ -140,9 +147,14 @@ def post(topic):
         return redirect(url_for('login')) 
     error = None
     if request.method == 'POST':
-        if request.form['subject'] != "" and request.form['body'] != "":
-            g.db.execute('insert into posts (topic, poster, subject, body) values (?, ?, ?, ?)', \
-            [topic, session['username'], request.form['subject'], request.form['body']])
+        if request.form['subject'] != "":
+            body = request.form['body']
+            body = body if body != "" else None
+            url = request.form['url']
+            url = url if url != "" else None
+
+            g.db.execute('insert into posts (url, topic, poster, subject, body) values (?, ?, ?, ?, ?)', \
+            [url, topic, session['username'], request.form['subject'], body])
             g.db.commit()
             
             # Get the post_id of the new post to use as a redis key
