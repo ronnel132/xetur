@@ -24,10 +24,12 @@
             </a>
         </span>
         {% endif %}
+        {% if has_next: %}
         <span class=nextprev>
             <a href="{{url_for('branch', topic=topic, before=before)}}">
                 next
             </a>
         </span>
+        {% endif %}
     </div>
 {% endblock %}

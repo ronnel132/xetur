@@ -7,6 +7,7 @@ import time
 from contextlib import closing
 from datetime import datetime
 from flask import Flask, request, session, g, redirect, url_for, render_template, jsonify
+from sys import maxint
 from time import mktime
 
 # Initialize the app and set our configuration
@@ -54,10 +55,21 @@ def parse_posts(posts):
     downvotes=r_server.get("post:" + str(post[0]) + ":downvotes")) for post in posts]
     return parsed
 
+def parse_comments(comments):
+    parsed = [dict(comment_id=cmnt[0], post_id=cmnt[1], poster=cmnt[2], body=cmnt[3], \
+    upvotes=r_server.get("comment:"+str(cmnt[0])+":upvotes"), \
+    downvotes=r_server.get("comment:"+str(cmnt[0])+":downvotes")) \
+    for cmnt in comments]
+    return parsed
+
 # Fetch an individual post based on a unique post_id
 def fetch_post(post_id):
     post = g.db.execute('select * from posts where post_id = ?', [int(post_id)]).fetchone()
     return post
+
+def fetch_comment(comment_id):
+    comment = g.db.execute('select * from comments where comment_id=?', [int(comment_id)]).fetchone()
+    return comment
 
 @app.route('/')
 @app.route('/before=<before>')
@@ -68,40 +80,42 @@ def main_page(before=None):
     else:
         post_ids = r_server.zrevrange('all:posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
         before = int(before) + app.config['POSTS_PER_PAGE']
+    has_next = before < r_server.zcount("all:posts", -maxint, maxint)
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts) 
-    return render_template('main_page.html', posts=posts, before=before, posts_per_page=app.config['POSTS_PER_PAGE'])
+    return render_template('main_page.html', posts=posts, before=before, has_next=has_next,\
+    posts_per_page=app.config['POSTS_PER_PAGE'])
 
 # 'branches' are the equivalent of subreddits
 @app.route('/x/<topic>')
 @app.route('/x/<topic>/before=<before>')
 def branch(topic, before=None):
+    """Show a branch (topic), with posts ordered by score"""
     if before == None:
-        post_ids = r_server.zrange(topic + ":posts", 0, app.config['POSTS_PER_PAGE'] - 1)
+        post_ids = r_server.zrevrange(topic + ":posts", 0, app.config['POSTS_PER_PAGE'] - 1)
         before = app.config['POSTS_PER_PAGE']
     else:
         post_ids = r_server.zrevrange(topic + ':posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
         before = int(before) + app.config['POSTS_PER_PAGE']
+    has_next = before < r_server.zcount(topic + ":posts", -maxint, maxint)
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
-    return render_template('show_topic.html', topic=topic, posts=posts, before=before, posts_per_page=app.config['POSTS_PER_PAGE'])
+    return render_template('show_topic.html', topic=topic, posts=posts, before=before, \
+    has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'])
 
 @app.route('/x/<topic>/<post_id>')
 def show_post(topic, post_id):
-    cur1 = g.db.execute('select * from comments where post_id=?', [post_id])
-    cur2 = g.db.execute('select * from posts where post_id=?', [post_id])
-
-    # extract comment list for post from sql and redis servers
-    comments = [dict(comment_id=row[0], post_id=row[1], poster=row[2], \
-    body=row[3], upvotes=r_server.get("comment:" + str(row[0]) + ":upvotes"),\
-    downvotes=r_server.get("comment:" + str(row[0]) + ":downvotes")) \
-    for row in cur1.fetchall()]
-
-    post = parse_posts(cur2.fetchall())[0]
+    """Show a post and its associated comments, ordered by score."""
+    comment_ids = r_server.zrevrange(post_id + ":comments", 0, -1)
+    raw_comments = [fetch_comment(comment_id) for comment_id in comment_ids]
+    comments = parse_comments(raw_comments)
+    # parse_posts returns a singelton list in this case
+    post = parse_posts([fetch_post(post_id)])[0]
     return render_template('show_post.html', topic=topic, comments=comments, post=post)
 
 @app.route('/comment', methods=['POST'])
 def comment():
+    """URL for handling when a user comments."""
     if g.username == None:
         return redirect(url_for('login')) 
     if request.form['text'] != "":
@@ -114,13 +128,14 @@ def comment():
         commented = r_server.zadd(str(post_id) + ":comments", comment_id, 0)
         upvote_set = r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
         downvote_set = r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
-        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+        time_set = r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
         return jsonify({ 
             'success' : commented and upvote_set and downvote_set })
 #     return redirect(url_for('show_post', topic=topic, post_id=post_id))
 
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
+    """Submit a post to a branch."""
     if g.username == None:
         return redirect(url_for('login')) 
     error = None
@@ -149,7 +164,9 @@ def post(topic):
 
 @app.route('/upvote', methods=['POST'])
 def upvote():
+    """URL for handling upvoting posts or comments."""
     id = str(request.form['id'])
+    # a vote_type may be either 'comment' or 'post'
     vote_type = request.form['type']
     r_server.incr(vote_type + ":" + id + ":upvotes")
     return jsonify({
@@ -157,6 +174,7 @@ def upvote():
 
 @app.route('/downvote', methods=['POST'])
 def downvote():
+    """URL for handling downvoting posts or comments."""
     id = str(request.form['id'])
     vote_type = request.form['type']
     r_server.incr(vote_type + ":" + id + ":downvotes")
@@ -164,6 +182,7 @@ def downvote():
         'downvotes' : r_server.get(vote_type + ":" + id + ":downvotes") })
 
 def generate_salt():
+    """Generate salt for secure password storage."""
     chars = []
     for i in range(8):
         chars.append(random.choice(app.config['ALPHABET']))
@@ -176,6 +195,7 @@ def password_hash(password, salt):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login a user."""
     # user is already logged in!
     if g.username != None:
         return redirect(url_for('main_page'))
@@ -195,6 +215,7 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Register a new user."""
     # user is already logged in!
     if g.username != None:
         return redirect(url_for('main_page'))
@@ -223,6 +244,7 @@ def register():
 
 @app.route('/logout')
 def logout():
+    """Logout a user."""
     session.pop('username', None)
     return redirect(url_for('main_page'))
 

@@ -31,10 +31,12 @@
             </a>
         </span>
         {% endif %}
+        {% if has_next: %}
         <span class=nextprev>
             <a href="{{url_for('main_page', before=before)}}">
                 next
             </a>
         </span>
+        {% endif %}
     </div>
 {% endblock %}
