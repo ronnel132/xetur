@@ -74,7 +74,9 @@ def fetch_comment(comment_id):
     return comment
 
 def clean_url(url):
-    if 'http://' not in url:
+    if url is None:
+        return None
+    elif 'http://' not in url:
         url = 'http://' + url
     return url
 
@@ -107,6 +109,7 @@ def branch(topic, before=None):
     has_next = before < r_server.zcount(topic + ":posts", -maxint, maxint)
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
+    print posts
     return render_template('show_topic.html', topic=topic, posts=posts, before=before, \
     has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'])
 
@@ -118,7 +121,7 @@ def show_post(topic, post_id):
     comments = parse_comments(raw_comments)
     # parse_posts returns a singelton list in this case
     post = parse_posts([fetch_post(post_id)])[0]
-    return render_template('show_post.html', topic=topic, comments=comments, post=post)
+    return render_template('show_post.html', comments=comments, post=post)
 
 @app.route('/comment', methods=['POST'])
 def comment():

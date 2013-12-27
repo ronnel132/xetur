@@ -11,8 +11,10 @@
     text-decoration: none;
 }
 
-html { 
-    background: white;
+html {
+    background: url(
+    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAKklEQVQIW2N8+ujafwYoePNgDwMjTADEEVFwgQjAOCCFjBcPTfoPkoEBAJRXFv1MYRsDAAAAAElFTkSuQmCC
+    );
 }
 
 .clear {
@@ -25,16 +27,20 @@ html {
 
 .logo {  
     font-weight: lighter;
-    font-family: 'Josefin Sans', sans-serif; 
-    font-size: 3.75em;
+    font-family: 'Copse', serif; 
+    font-size: 45px;
     text-align: center;
     color: white;
+    margin-top: 0.6em;
     margin-bottom: 0.2em;
-    padding: 0;
 }
 
 .navbar { 
-    background: #008080; padding: 0.2em 0.2em;
+    background-image: url('images/denim.png');
+    padding: 0.2em 0.2em;
+    -moz-box-shadow:    inset 0 0 12px #3D3D3D;
+    -webkit-box-shadow: inset 0 0 12px #3D3D3D;
+    box-shadow:         inset 0 0 12px #3D3D3D;
 }
 
 .navbar li { 
@@ -80,9 +86,13 @@ html {
 }
 
 .post_descrip { 
-    float: left; 
     font-size: 0.7em; 
-    padding-bottom: 0.5em; 
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+}
+
+.descrip_entity {
+    float: left;
     padding-right: 0.3em;
 }
 
@@ -97,7 +107,11 @@ html {
 }
 
 .post { 
-    background: #20BF80; 
+    background: white; 
+    border-style: solid;
+    border-width: 1px;
+    border-color: #d1c39b;
+    border-radius: 5px;
     margin-top: 2em; 
     margin-left: 20em; 
     margin-right: 20em; 
@@ -106,7 +120,7 @@ html {
 
 .post h1 { 
     font-size: 1.8em; 
-    color: white;
+    color: black;
     margin-left:15%; 
     margin-bottom: 1em;
     font-family: 'Nixie One', cursive;
@@ -116,22 +130,33 @@ html {
     margin-left: 15%; 
     font-family: 'Nixie One', cursive; 
     font-size: 1.7em;
-    color: white;
+    color: black;
 }
 
 .post form input {
     width: 10em;
     font-size: 0.6em;
-    border-style: None;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .subbranch_header { 
     margin-top: 1.5em; 
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
+    margin-left: 6%;
+    width: 88%;
+    background: #32425c;
+    padding-top: 0.6em;
+    padding-bottom: 0.2em;
+    border-radius: 5px;
+    -moz-box-shadow:    inset 0 0 10px #3D3D3D;
+    -webkit-box-shadow: inset 0 0 10px #3D3D3D;
+    box-shadow:         inset 0 0 10px #3D3D3D;
 }
 
 .subbranch_header h2 { 
-    color: black; margin: 0; 
+    color: white; 
+    margin: 0; 
     padding-top: 0.0em; 
     padding-bottom: 0.0em; 
     padding-left: 0.2em; 
@@ -147,10 +172,15 @@ html {
     width: 90%;
 } 
 
-#topic_content { 
+#topic_content {
     margin-left: 1%; 
     margin-right: 20%; 
     width: 76.5%;
+    background: white;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #d1c39b;
+    border-width: 1px;
     box-shadow: 0 0 40px 1px #C8C8C8; 
 }
 
@@ -161,9 +191,10 @@ html {
 #topic_sidebar { 
     float: right; 
     width: 19.5%; 
-    background: #20BF80;
+    background: #d29623;
     margin-bottom: 1em; 
     margin-right: 1%; 
+    border-radius: 5px;
 }
 
 #topic_sidebar a:link { 
@@ -237,11 +268,19 @@ html {
     margin-left: 20%; 
     width: 60%; 
     background: white;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #d1c39b;
+    border-width: 1px;
     box-shadow: 0 0 40px 1px #C8C8C8; 
     margin-top: 1em;
 }
 
 .show_post_wrapper h3 {
+    margin-left: 2%;
+}
+
+.show_post_wrapper p {
     margin-left: 2%;
 }
 

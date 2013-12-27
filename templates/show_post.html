@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class=subbranch_header>
-        <h2>{{ topic }}</h2>
+        <a href="{{ url_for('branch', topic=post.topic) }}">
+            <h2>{{ post.topic }}</h2>
+        </a>
     </div>
-    <hr class=divider></hr>
     <div class=show_post_wrapper>
         <div class=display_post>
             {% if post.url != None: %}
