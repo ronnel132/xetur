@@ -60,7 +60,6 @@ html {
 }
 
 .topics { 
-    float: clear; 
     padding-bottom: 0.3em; 
 }
 
@@ -72,23 +71,20 @@ html {
     color: white 
 }
 
-.branch_post { 
-    margin: 0.5em 0.0em; 
-    margin-right: 0.6em; 
-    text-align: left; 
+.posts {
+    margin-top: 1em;
+}
+
+.branch_post {
+    margin-left: 1.5em;
 }
 
 .post_subject { 
-    padding-top: 0.5em; 
-    padding-bottom: 0.5em;
-    padding-left: 10px; 
-    font-size: 1em; 
+    font-size: 1em;
 }
 
 .post_descrip { 
     font-size: 0.7em; 
-    margin-bottom: 0.5em;
-    margin-right: 0.5em;
 }
 
 .descrip_entity {
@@ -166,6 +162,7 @@ html {
 }
 
 #topic_container { 
+    clear: both;
     margin-top: 0.0em; 
     margin-bottom: 2em; 
     margin-left: 5%;
@@ -223,8 +220,11 @@ html {
 
 .nextprev { 
     margin: 0.4em 0.4em; 
+    background: white;
     border-style: solid; 
     border-width: 1px;
+    border-radius: 3px;
+    border-color: #d1c39b;
     padding: 0.2em 0.2em;
 }
 
@@ -274,6 +274,7 @@ html {
     border-width: 1px;
     box-shadow: 0 0 40px 1px #C8C8C8; 
     margin-top: 1em;
+    margin-bottom: 2em;
 }
 
 .show_post_wrapper h3 {
@@ -282,6 +283,11 @@ html {
 
 .show_post_wrapper p {
     margin-left: 2%;
+}
+
+.post_divider {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
 }
 
 .divider { 
@@ -313,9 +319,16 @@ html {
     margin-top: 0.7em;
 }
 
+.comment_block {
+    margin-left: 2.5%;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-right: 1em;
+}
+
 .comment_block form { 
     padding-top: 0.5em; 
-    margin-left: 5%; 
+    margin-left: 2.5%; 
     padding-bottom: 0.2em;
 }
 
@@ -323,12 +336,10 @@ html {
     list-style-type: none; 
 }
 
-#comment_list {
-    margin-left: 5%;
-    padding-bottom: 1em;
-    margin-right: 5%;
+#comment_list li {
+    clear: both;
 }
 
-#comment_list li {
-    float: clear;
+.comment_divider {
+    padding: 0.6em 0em;
 }

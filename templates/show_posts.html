@@ -1,38 +1,44 @@
-<ul>
-{% for post in posts %}
-    <li>
-        <div class=branch_post>
-            {% if post.url %}
-            <a href="{{ post.url }}">
-                <p class=post_subject>{{ post.subject }}</p>
-            </a>
-            {% else %}
-            <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
-                <p class=post_subject>{{ post.subject }}</p>
-            </a>
-            {% endif %}
-            <div class=post_descrip>
-                <p class=descrip_entity id="post_upvote{{post.post_id}}">{{post.upvotes}}</p>
-                <a class="descrip_entity votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
-                Upvote
+<div class=posts>
+    <ul>
+    {% for post in posts %}
+        <li>
+            <div class=branch_post>
+                {% if post.url %}
+                <a href="{{ post.url }}">
+                    <p class=post_subject>{{ post.subject }}</p>
                 </a>
-                <p class=descrip_entity id="post_downvote{{post.post_id}}">{{post.downvotes}}</p>
-                <a class="descrip_entity votebtn{{post.post_id}}" href="javascript:downvote('#post_downvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
-                Downvote
+                {% else %}
+                <a href="{{ url_for('show_post', topic=post.topic, post_id=post.post_id) }}">
+                    <p class=post_subject>{{ post.subject }}</p>
                 </a>
-                <p class=descrip_entity>|</p>
-                <p class=descrip_entity>{{post.comment_count}}</p>
-                <a class=descrip_entity href="{{url_for('show_post', topic=post.topic, post_id=post.post_id)}}">Comments
-                </a>
+                {% endif %}
+                <div class=post_descrip>
+                    <p class=descrip_entity>Submitted by {{post.poster}}</p>
+                    <p class=descrip_entity>|</p>
+                    <p class=descrip_entity id="post_upvote{{post.post_id}}">{{post.upvotes}}</p>
+                    <a class="descrip_entity votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
+                    Upvote
+                    </a>
+                    <p class=descrip_entity id="post_downvote{{post.post_id}}">{{post.downvotes}}</p>
+                    <a class="descrip_entity votebtn{{post.post_id}}" href="javascript:downvote('#post_downvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
+                    Downvote
+                    </a>
+                    <p class=descrip_entity>|</p>
+                    <p class=descrip_entity>{{post.comment_count}}</p>
+                    <a class=descrip_entity href="{{url_for('show_post', topic=post.topic, post_id=post.post_id)}}">Comments
+                    </a>
+                </div>
             </div>
-        </div>
-        {% if post != posts[-1] %}
-            <hr class=divider></hr>
-        {% else %}
-            <hr class=blank_divider></hr>
-        {% endif %}
-    </li>
-{% else %}
-    <p class=noposts>No Más</p>
-{% endfor %}
-</ul>
+            <div class=post_divider>
+                {% if post != posts[-1] %}
+                <hr class=divider></hr>
+                {% else %}
+                <hr class=blank_divider></hr>
+                {% endif %}
+            </div>
+        </li>
+    {% else %}
+        <p class=noposts>No Más</p>
+    {% endfor %}
+    </ul>
+</div>

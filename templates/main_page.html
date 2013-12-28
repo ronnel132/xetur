@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class=subbranch_header>
-        <h2>front page</h2>
+        <a href="{{ url_for('main_page') }}">
+            <h2>front page</h2>
+        </a>
     </div>
     <div id=topic_container>
         <div id=topic_sidebar>

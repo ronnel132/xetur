@@ -109,7 +109,6 @@ def branch(topic, before=None):
     has_next = before < r_server.zcount(topic + ":posts", -maxint, maxint)
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
-    print posts
     return render_template('show_topic.html', topic=topic, posts=posts, before=before, \
     has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'])
 
@@ -135,13 +134,13 @@ def comment():
         [post_id, session['username'], body])
         g.db.commit()
         comment_id = g.db.execute('select last_insert_rowid()').fetchone()[0]
-        commented = r_server.zadd(str(post_id) + ":comments", comment_id, 0)
-        upvote_set = r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
-        downvote_set = r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
-        time_set = r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+        r_server.zadd(str(post_id) + ":comments", comment_id, 0)
+        r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
+        r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
+        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
         return jsonify({ 
-            'success' : commented and upvote_set and downvote_set })
-#     return redirect(url_for('show_post', topic=topic, post_id=post_id))
+            'comment_id' : comment_id,
+            'username': session['username'] })
 
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):

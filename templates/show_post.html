@@ -31,16 +31,19 @@
             {% for comment in comments %}
                 <li>
                     <p>{{ comment.body }}</p>
-                    <p class=post_descrip id="comment_upvote{{comment.comment_id}}">{{comment.upvotes}}</p>
-                    <a class="post_descrip votebtn{{comment.comment_id}}" href="javascript:upvote('#comment_upvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
-                    Upvote
-                    </a>
-                    <p class=post_descrip id="comment_downvote{{comment.comment_id}}">{{comment.downvotes}}</p>
-                    <a class="post_descrip votebtn{{comment.comment_id}}" href="javascript:downvote('#comment_downvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
-                    Downvote
-                    </a>
+                    <div class=post_descrip>
+                        <p class=descrip_entity>Submitted by {{comment.poster}}</p>
+                        <p class=descrip_entity id="comment_upvote{{comment.commet_id}}">{{comment.upvotes}}</p>
+                        <a class="descrip_entity votebtn{{comment.comment_id}}" href="javascript:upvote('#comment_upvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
+                        Upvote
+                        </a>
+                        <p class=descrip_entity id="comment_downvote{{comment.comment_id}}">{{comment.downvotes}}</p>
+                        <a class="descrip_entity votebtn{{comment.comment_id}}" href="javascript:downvote('#comment_downvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
+                        Downvote
+                        </a>
+                    </div>
                 </li>
-                <div class=clear></div>
+                <div class=comment_divider></div>
             {% endfor %}
             </ul>
         </div>

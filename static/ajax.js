@@ -26,6 +26,26 @@ function downvote(htmlId, id, voteBtn, type) {
     });
 }
 
+function createCommentDescrip(content, func_name, comment_id) {
+    var p = document.createElement("p");
+    p.innerHTML = content;
+    p.className = "descrip_entity";
+    p.id = "comment_".concat(func_name).concat(comment_id);
+    return p;
+}
+
+function createCommentLink(content, comment_id) {
+    var a = document.createElement("a");
+    a.className = "descrip_entity votebtn".concat(comment_id);
+    a.innerHTML = content;
+    var func_name = content.toLowerCase();
+    a.href = "javascript:".concat(func_name).concat('(').concat(
+    "'#comment_").concat(func_name).concat(comment_id).concat(
+    "', '").concat(comment_id).concat("', '.votebtn").concat(comment_id)
+    .concat("', 'comment');");
+    return a;
+}
+
 function comment(postId) {
     $.post('/comment', {
         post_id: postId,
@@ -35,7 +55,23 @@ function comment(postId) {
         var li = document.createElement("li");
         var comment = document.createElement("p");
         comment.innerHTML = $('textarea[name="comment_text"]').val();
+        var comment_id = response['comment_id'];
+        var submitted_by = document.createElement("p");
+        submitted_by.innerHTML = "Submitted by ".concat(response['username']);
+        submitted_by.className = "descrip_entity";
+        var upvotes = createCommentDescrip('0', 'upvote', comment_id);
+        var downvotes = createCommentDescrip('0', 'downvote', comment_id);
+        var upvoteButton = createCommentLink('Upvote', comment_id);
+        var downvoteButton = createCommentLink('Downvote', comment_id);
+        var div = document.createElement("div");
+        div.className = "post_descrip";
         li.appendChild(comment);
+        div.appendChild(submitted_by);
+        div.appendChild(upvotes);
+        div.appendChild(upvoteButton);
+        div.appendChild(downvotes);
+        div.appendChild(downvoteButton);
+        li.appendChild(div);
         ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
     });
 }
