@@ -1,8 +1,8 @@
 import hashlib
+import MySQLdb
 import random
 import redis
 import settings
-import sqlite3
 import time
 from contextlib import closing
 from datetime import datetime
@@ -21,30 +21,34 @@ def get_app():
     return app
 
 def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+    return MySQLdb.connect(host=app.config['DATABASE_HOST'], user=app.config['DATABASE_USER'],\
+        passwd=app.config['DATABASE_PASS'], db=app.config['DATABASE'])
 
-# Initialize the sqlite database 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+# def init_db():
+#     with closing(connect_db()) as db:
+#         with app.open_resource('schema.sql', mode='r') as f:
+#             db.cursor().executescript(f.read())
+#         db.commit()
 
 @app.before_request
 def before_request():
     # open db connection before request
     g.db = connect_db()
+    g.cur = g.db.cursor()
     g.username = None
     if 'username' in session:
         g.username = session['username']
-    topics = g.db.execute('select topic from topics').fetchall()
-    topics = [topic[0] for topic in topics]
+    g.cur.execute('select topic from topics')
+    topics = [topic[0] for topic in g.cur.fetchall()]
     g.topics = topics
 
 @app.teardown_request
 def teardown_request(exception):
     # close db connection after request
     db = getattr(g, 'db', None)
+    cur = getattr(g, 'cur', None)
+    if cur != None:
+        cur.close()
     if db != None:
         db.close()
 
@@ -66,12 +70,12 @@ def parse_comments(comments):
 
 # Fetch an individual post based on a unique post_id
 def fetch_post(post_id):
-    post = g.db.execute('select * from posts where post_id = ?', [int(post_id)]).fetchone()
-    return post
+    g.cur.execute('select * from posts where post_id=%s', [int(post_id)])
+    return g.cur.fetchone()
 
 def fetch_comment(comment_id):
-    comment = g.db.execute('select * from comments where comment_id=?', [int(comment_id)]).fetchone()
-    return comment
+    g.cur.execute('select * from comments where comment_id=%s', [int(comment_id)])
+    return g.cur.fetchone()
 
 def clean_url(url):
     if url is None:
@@ -130,14 +134,15 @@ def comment():
     if request.form['text'] != "":
         post_id = request.form['post_id']
         body = request.form['text']
-        g.db.execute('insert into comments (post_id, poster, body) values (?, ?, ?)', \
+        g.cur.execute('insert into comments (post_id, poster, body) values (%s, %s, %s)', \
         [post_id, session['username'], body])
         g.db.commit()
-        comment_id = g.db.execute('select last_insert_rowid()').fetchone()[0]
+        g.cur.execute('select last_insert_id()')
+        comment_id = g.cur.fetchone()[0]
         r_server.zadd(str(post_id) + ":comments", comment_id, 0)
         r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
         r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
-        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%s"))
         return jsonify({ 
             'comment_id' : comment_id,
             'username': session['username'] })
@@ -155,13 +160,13 @@ def post(topic):
             url = request.form['url']
             url = url if url != "" else None
 
-            g.db.execute('insert into posts (url, topic, poster, subject, body) values (?, ?, ?, ?, ?)', \
+            g.cur.execute('insert into posts (url, topic, poster, subject, body) values (%s, %s, %s, %s, %s)', \
             [url, topic, session['username'], request.form['subject'], body])
             g.db.commit()
             
             # Get the post_id of the new post to use as a redis key
-            post_id = g.db.execute('select last_insert_rowid()').fetchone()[0]
-
+            g.cur.execute('select last_insert_id()')
+            post_id = g.cur.fetchone()[0]
             # Initial score is 0
             r_server.zadd(topic + ":posts", post_id, 0)
             # Initial number of upvotes and downvotes is zero 
@@ -215,14 +220,15 @@ def login():
         return redirect(url_for('main_page'))
     error = None
     if request.method == 'POST':
-        cur = g.db.execute('select * from users where username = ?', \
+        g.cur.execute('select * from users where username = %s', \
             [request.form['username']])
-        raw_user_details = cur.fetchone()
+        raw_user_details = g.cur.fetchone()
         if raw_user_details != None:
             salt = raw_user_details[1]
             stored_password_hash = raw_user_details[2]
             if password_hash(request.form['password'], salt) == stored_password_hash:
                 session['username'] = raw_user_details[0]
+                g.cur.execute('select * from users')
                 return redirect(url_for('main_page'))
         error = "Username or Password Invalid"
     return render_template('login.html', error=error)
@@ -239,9 +245,12 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
-        username_exists = g.db.execute('select ? in (select username from users)', [username]).fetchone()[0]
+        username_exists = g.cur.execute('select %s in (select username from users)', [username])
+        username_exists = g.cur.fetchone()[0]
         if username_exists:
             error = "Username already in use"
+        elif len(username) > 25:
+            error = "Username is too long"
         else:
             # Username is valid
             if password != confirm_password:
@@ -251,7 +260,7 @@ def register():
             else:
                 salt = generate_salt()
                 hashed_password = password_hash(password, salt)
-                g.db.execute('insert into users (username, salt, password_hash) values (?, ?, ?)', [username, salt, hashed_password])
+                g.cur.execute('insert into users (username, salt, password_hash) values (%s, %s, %s)', [username, salt, hashed_password])
                 g.db.commit()
                 return redirect(url_for('login'))
     return render_template('register.html', error=error)

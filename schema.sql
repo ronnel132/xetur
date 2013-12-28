@@ -4,31 +4,31 @@ drop table if exists users;
 drop table if exists topics;
 
 create table topics (
-    topic text primary key
+    topic varchar(30) primary key
 );
 
 create table users (
-    username text primary key,
+    username varchar(25) primary key,
     salt char(8) not null,
     password_hash char(64) not null,
     upvotes integer default 0,
     downvotes integer default 0,
-    signup_date datetime default current_timestamp
+    signup_date timestamp default now() 
 );
 
 create table posts (
-    post_id integer primary key autoincrement,
+    post_id integer primary key auto_increment,
     url text,
-    topic text not null references topics(topic),
-    poster text not null references users(username),
+    topic varchar(30) not null references topics(topic),
+    poster varchar(25) not null references users(username),
     subject text not null,
     body text
 );
 
 create table comments (
-    comment_id integer primary key autoincrement, 
+    comment_id integer primary key auto_increment, 
     post_id integer not null references posts(post_id),
-    poster text not null references users(username),
+    poster varchar(25) not null references users(username),
     body text not null
 );
 
