@@ -26,12 +26,6 @@ def connect_db():
     return MySQLdb.connect(host=app.config['DATABASE_HOST'], user=app.config['DATABASE_USER'],\
         passwd=app.config['DATABASE_PASS'], db=app.config['DATABASE'])
 
-# def init_db():
-#     with closing(connect_db()) as db:
-#         with app.open_resource('schema.sql', mode='r') as f:
-#             db.cursor().executescript(f.read())
-#         db.commit()
-
 @app.before_request
 def before_request():
     # open db connection before request
@@ -133,7 +127,7 @@ def comment():
     """URL for handling when a user comments."""
     if g.username == None:
         return redirect(url_for('login')) 
-    if request.form['text'] != "":
+    elif request.form['text'] != "":
         post_id = request.form['post_id']
         body = request.form['text']
         g.cur.execute('insert into comments (post_id, poster, body) values (%s, %s, %s)', \
