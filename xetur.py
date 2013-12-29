@@ -1,5 +1,6 @@
 import hashlib
 import MySQLdb
+import os
 import random
 import redis
 import settings
@@ -273,5 +274,6 @@ def logout():
     return redirect(url_for('main_page'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=33507, threaded=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, threaded=True)
 
