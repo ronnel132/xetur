@@ -126,7 +126,8 @@ def show_post(topic, post_id):
 def comment():
     """URL for handling when a user comments."""
     if g.username == None:
-        return redirect(url_for('login')) 
+        return jsonify ({
+            'authorized' : False })
     elif request.form['text'] != "":
         post_id = request.form['post_id']
         body = request.form['text']
@@ -139,10 +140,16 @@ def comment():
         r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
         r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
         r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%s"))
-        return jsonify({ 
+        return jsonify ({ 
+            'authorized' : True,
+            'success' : True,
             'comment_id' : comment_id,
             'username': session['username'] })
-
+    else:
+        return jsonify ({
+            'authorized' : True,
+            'success' : False })
+        
 @app.route('/x/<topic>/post', methods=['GET', 'POST'])
 def post(topic):
     """Submit a post to a branch."""

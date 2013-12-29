@@ -46,32 +46,41 @@ function createCommentLink(content, comment_id) {
     return a;
 }
 
-function comment(postId) {
+function comment(topic, postId) {
     $.post('/comment', {
         post_id: postId,
-        text: $('textarea[name="comment_text"]').val()
+        text: $('textarea[name="comment_text"]').val(),
+        topic: topic
     }).done(function(response) {
-        var ul = document.getElementById("comment_list");
-        var li = document.createElement("li");
-        var comment = document.createElement("p");
-        comment.innerHTML = $('textarea[name="comment_text"]').val();
-        var comment_id = response['comment_id'];
-        var submitted_by = document.createElement("p");
-        submitted_by.innerHTML = "Submitted by ".concat(response['username']);
-        submitted_by.className = "descrip_entity";
-        var upvotes = createCommentDescrip('0', 'upvote', comment_id);
-        var downvotes = createCommentDescrip('0', 'downvote', comment_id);
-        var upvoteButton = createCommentLink('Upvote', comment_id);
-        var downvoteButton = createCommentLink('Downvote', comment_id);
-        var div = document.createElement("div");
-        div.className = "post_descrip";
-        li.appendChild(comment);
-        div.appendChild(submitted_by);
-        div.appendChild(upvotes);
-        div.appendChild(upvoteButton);
-        div.appendChild(downvotes);
-        div.appendChild(downvoteButton);
-        li.appendChild(div);
-        ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
+        if (response['authorized']) {
+            if (response['success']) {
+                var ul = document.getElementById("comment_list");
+                var li = document.createElement("li");
+                var comment = document.createElement("p");
+                comment.innerHTML = $('textarea[name="comment_text"]').val();
+                var comment_id = response['comment_id'];
+                var submitted_by = document.createElement("p");
+                submitted_by.innerHTML = "Submitted by ".concat(response['username']);
+                submitted_by.className = "descrip_entity";
+                var upvotes = createCommentDescrip('0', 'upvote', comment_id);
+                var downvotes = createCommentDescrip('0', 'downvote', comment_id);
+                var upvoteButton = createCommentLink('Upvote', comment_id);
+                var downvoteButton = createCommentLink('Downvote', comment_id);
+                var div = document.createElement("div");
+                div.className = "post_descrip";
+                li.appendChild(comment);
+
+                div.appendChild(submitted_by)
+                    appendChild(upvotes)
+                    appendChild(upvoteButton)
+                    appendChild(downvotes)
+                    appendChild(downvoteButton);
+                li.appendChild(div);
+                ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
+            }
+        } 
+        else {
+            window.location.href = "/login";
+        }
     });
 }
