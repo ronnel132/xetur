@@ -71,10 +71,10 @@ function comment(topic, postId) {
                 li.appendChild(comment);
 
                 div.appendChild(submitted_by)
-                    appendChild(upvotes)
-                    appendChild(upvoteButton)
-                    appendChild(downvotes)
-                    appendChild(downvoteButton);
+                    .appendChild(upvotes)
+                    .appendChild(upvoteButton)
+                    .appendChild(downvotes)
+                    .appendChild(downvoteButton);
                 li.appendChild(div);
                 ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
             }

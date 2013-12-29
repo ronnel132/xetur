@@ -33,7 +33,7 @@
                     <p>{{ comment.body }}</p>
                     <div class=post_descrip>
                         <p class=descrip_entity>Submitted by {{comment.poster}}</p>
-                        <p class=descrip_entity id="comment_upvote{{comment.commet_id}}">{{comment.upvotes}}</p>
+                        <p class=descrip_entity id="comment_upvote{{comment.comment_id}}">{{comment.upvotes}}</p>
                         <a class="descrip_entity votebtn{{comment.comment_id}}" href="javascript:upvote('#comment_upvote{{comment.comment_id}}', '{{comment.comment_id}}', '.votebtn{{comment.comment_id}}', 'comment');">
                         Upvote
                         </a>
