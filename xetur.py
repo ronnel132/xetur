@@ -15,7 +15,8 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 # Connect to the redis server
-r_server = redis.Redis(app.config['REDIS_HOST'], port=app.config['REDIS_PORT'])
+r_server = redis.from_url(app.config['REDISTOGO_URL'])
+r_server = redis.Redis(host="albacore.redistogo.com", port=9770, password="1b7723de2133362287c1ca0eb0550628")
 
 def get_app():
     return app
@@ -272,5 +273,5 @@ def logout():
     return redirect(url_for('main_page'))
 
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(host='0.0.0.0', port=33507, threaded=True)
 
