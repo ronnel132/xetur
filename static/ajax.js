@@ -70,11 +70,11 @@ function comment(topic, postId) {
                 div.className = "post_descrip";
                 li.appendChild(comment);
 
-                div.appendChild(submitted_by)
-                    .appendChild(upvotes)
-                    .appendChild(upvoteButton)
-                    .appendChild(downvotes)
-                    .appendChild(downvoteButton);
+                div.appendChild(submitted_by);
+                div.appendChild(upvotes);
+                div.appendChild(upvoteButton);
+                div.appendChild(downvotes);
+                div.appendChild(downvoteButton);
                 li.appendChild(div);
                 ul.insertBefore(li, ul.getElementsByTagName("li")[0]);
             }

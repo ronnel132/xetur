@@ -16,15 +16,14 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 # Connect to the redis server
-r_server = redis.from_url(app.config['REDISTOGO_URL'])
-r_server = redis.Redis(host="albacore.redistogo.com", port=9770, password="1b7723de2133362287c1ca0eb0550628")
+r_server = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'], password=app.config['REDIS_PASS'])
 
 def get_app():
     return app
 
 def connect_db():
-    return MySQLdb.connect(host=app.config['DATABASE_HOST'], user=app.config['DATABASE_USER'],\
-        passwd=app.config['DATABASE_PASS'], db=app.config['DATABASE'])
+    return MySQLdb.connect(host=app.config['MYSQL_HOST'], user=app.config['MYSQL_USER'],\
+        passwd=app.config['MYSQL_PASS'], db=app.config['MYSQL_DB'])
 
 @app.before_request
 def before_request():

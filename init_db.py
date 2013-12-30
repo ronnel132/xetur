@@ -4,8 +4,8 @@ from xetur import get_app
 
 app = get_app()
 
-db = MySQLdb.connect(host=app.config['DATABASE_HOST'], user=app.config['DATABASE_USER'], \
-passwd=app.config['DATABASE_PASS'], db=app.config['DATABASE'])
+db = MySQLdb.connect(host=app.config['MYSQL_HOST'], user=app.config['MYSQL_USER'], \
+passwd=app.config['MYSQL_PASS'], db=app.config['MYSQL_DB'])
 
 lines = open('schema.sql', 'r').readlines()
 lines = [line.strip('\n') for line in lines]
