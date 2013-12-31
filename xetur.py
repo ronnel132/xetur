@@ -1,3 +1,9 @@
+"""
+    xetur 
+    ~~~~~
+
+    A reddit clone made with Flask, Redis and MySQL.
+"""
 import hashlib
 import MySQLdb
 import os
@@ -8,7 +14,6 @@ import time
 from contextlib import closing
 from datetime import datetime
 from flask import Flask, request, session, g, redirect, url_for, render_template, jsonify
-from sys import maxint
 from time import mktime
 
 # Initialize the app and set our configuration
@@ -16,7 +21,8 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 # Connect to the redis server
-r_server = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'], password=app.config['REDIS_PASS'])
+r_server = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'], \
+password=app.config['REDIS_PASS'])
 
 def get_app():
     return app
@@ -24,6 +30,16 @@ def get_app():
 def connect_db():
     return MySQLdb.connect(host=app.config['MYSQL_HOST'], user=app.config['MYSQL_USER'],\
         passwd=app.config['MYSQL_PASS'], db=app.config['MYSQL_DB'])
+
+def query_db(query, args=(), one=False):
+    g.cur.execute(query, args)
+    return g.cur.fetchone() if one else g.cur.fetchall()
+
+def order_topics(topics):
+    topic_dict = {}
+    for topic in topics:
+        topic_dict[topic] = r_server.zcard(topic + ':posts')
+    return sorted(topic_dict, key=topic_dict.get, reverse=True)
 
 @app.before_request
 def before_request():
@@ -33,8 +49,8 @@ def before_request():
     g.username = None
     if 'username' in session:
         g.username = session['username']
-    g.cur.execute('select topic from topics')
-    topics = [topic[0] for topic in g.cur.fetchall()]
+    topics = query_db('select topic from topics')
+    topics = order_topics([topic[0] for topic in topics])[:10]
     g.topics = topics
 
 @app.teardown_request
@@ -42,18 +58,15 @@ def teardown_request(exception):
     # close db connection after request
     db = getattr(g, 'db', None)
     cur = getattr(g, 'cur', None)
-    if cur != None:
-        cur.close()
-    if db != None:
-        db.close()
+    cur.close() if cur != None else None
+    db.close() if db != None else None
 
 # Parse posts into a list of dictionaries for easy access to post attributes
 def parse_posts(posts):
     parsed = [dict(post_id=post[0], url=clean_url(post[1]), topic=post[2], poster=post[3], subject=post[4], \
     body=post[5], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
     downvotes=r_server.get("post:" + str(post[0]) + ":downvotes"), \
-    comment_count=r_server.zcount(str(post[0])+":comments",-maxint,maxint))\
-    for post in posts]
+    comment_count=r_server.zcard(str(post[0])+":comments")) for post in posts]
     return parsed
 
 def parse_comments(comments):
@@ -65,30 +78,46 @@ def parse_comments(comments):
 
 # Fetch an individual post based on a unique post_id
 def fetch_post(post_id):
-    g.cur.execute('select * from posts where post_id=%s', [int(post_id)])
-    return g.cur.fetchone()
+    return query_db('select * from posts where post_id=%s', (post_id), True)
 
 def fetch_comment(comment_id):
-    g.cur.execute('select * from comments where comment_id=%s', [int(comment_id)])
-    return g.cur.fetchone()
+    return query_db('select * from comments where comment_id=%s', (comment_id), True)
 
 def clean_url(url):
-    if url is None:
-        return None
-    elif 'http://' not in url:
-        url = 'http://' + url
-    return url
+    return (url if 'http://' in url else 'http://' + url) if url != None else None
+
+def parse_form(form):
+    for v in form:
+        form[v] = None if form[v] == "" else form[v]
+    return form
+
+def generate_salt():
+    """Generate salt for secure password storage."""
+    chars = []
+    for i in range(8):
+        chars.append(random.choice(app.config['ALPHABET']))
+    return "".join(chars)
+
+def password_hash(password, salt):
+    salted_password = salt + password
+    hashed = hashlib.sha256(salted_password).hexdigest()
+    return hashed
+
+def get_page(topic, before):
+    if before == None:
+        post_ids = r_server.zrevrange(topic + ':posts', 0, app.config['POSTS_PER_PAGE'] - 1)
+        after = app.config['POSTS_PER_PAGE']
+    else: 
+        before = int(before)
+        post_ids = r_server.zrevrange(topic + ':posts', before, before + app.config['POSTS_PER_PAGE'] - 1)
+        after = before + app.config['POSTS_PER_PAGE']
+    return after, post_ids
 
 @app.route('/')
 @app.route('/before=<before>')
 def main_page(before=None):
-    if before == None:
-        post_ids = r_server.zrevrange('all:posts', 0, app.config['POSTS_PER_PAGE'] - 1)
-        before = app.config['POSTS_PER_PAGE']
-    else:
-        post_ids = r_server.zrevrange('all:posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
-        before = int(before) + app.config['POSTS_PER_PAGE']
-    has_next = before < r_server.zcount("all:posts", -maxint, maxint)
+    before, post_ids = get_page('all', before)
+    has_next = before < r_server.zcard("all:posts")
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts) 
     return render_template('main_page.html', posts=posts, before=before, has_next=has_next,\
@@ -99,20 +128,13 @@ def main_page(before=None):
 @app.route('/x/<topic>/before=<before>')
 def branch(topic, before=None):
     """Show a branch (topic), with posts ordered by score"""
-    if before == None:
-        post_ids = r_server.zrevrange(topic + ":posts", 0, app.config['POSTS_PER_PAGE'] - 1)
-        before = app.config['POSTS_PER_PAGE']
-    else:
-        post_ids = r_server.zrevrange(topic + ':posts', int(before), int(before) + app.config['POSTS_PER_PAGE'] - 1)
-        before = int(before) + app.config['POSTS_PER_PAGE']
-    has_next = before < r_server.zcount(topic + ":posts", -maxint, maxint)
+    before, post_ids = get_page(topic, before)
+    has_next = before < r_server.zcard(topic + ":posts")
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
-    g.cur.execute('select description from topics where topic=%s', [topic])
-    description = g.cur.fetchone()[0]
+    description = query_db('select description from topics where topic=%s', (topic), True)[0]
     return render_template('show_topic.html', topic=topic, posts=posts, before=before, \
-    has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'], \
-    description=description)
+    has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'], description=description)
 
 @app.route('/x/addbranch', methods=['GET', 'POST'])
 def addbranch():
@@ -124,7 +146,7 @@ def addbranch():
         bn = request.form['branch_name']
         bd = request.form['branch_descrip']
         if bn != "" or bd != "":
-            g.cur.execute('insert into topics values (%s, %s)', [bn, bd])
+            query_db('insert into topics values (%s, %s)', (bn, bd))
             g.db.commit()
             return redirect(url_for('main_page'))
         error = "Branch must have a name and a description"
@@ -140,6 +162,34 @@ def show_post(topic, post_id):
     post = parse_posts([fetch_post(post_id)])[0]
     return render_template('show_post.html', comments=comments, post=post)
 
+def redis_insert(insert_type, insert_id):
+    now = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
+    r_server.set(insert_type + ':' + str(insert_id) + ':upvotes', 0)
+    r_server.set(insert_type + ':' + str(insert_id) + ':downvotes', 0)
+    r_server.set(insert_type + ':' + str(insert_id) + ':time', now)
+        
+@app.route('/x/<topic>/post', methods=['GET', 'POST'])
+def post(topic):
+    """Submit a post to a branch."""
+    if g.username == None:
+        return redirect(url_for('login')) 
+    error = None
+    form = parse_form(request.form)
+    if request.method == 'POST':
+        if form['subject'] != None:
+            body = form['body']
+            url = form['url']
+            query_db('insert into posts (url, topic, poster, subject, body) values (%s, %s, %s, %s, %s)', \
+                (url, topic, g.username, form['subject'], body))
+            g.db.commit()
+            post_id = query_db('select last_insert_id()', one=True)[0]
+            r_server.zadd(topic + ":posts", post_id, 0)
+            redis_insert('post', post_id)
+            r_server.zadd("all:posts", post_id, 0)
+            return redirect(url_for('branch', topic=topic))
+        error = "Invalid Post: Posts Must have Subject and Body" 
+    return render_template('post.html', topic=topic, error=error)
+
 @app.route('/comment', methods=['POST'])
 def comment():
     """URL for handling when a user comments."""
@@ -149,15 +199,12 @@ def comment():
     elif request.form['text'] != "":
         post_id = request.form['post_id']
         body = request.form['text']
-        g.cur.execute('insert into comments (post_id, poster, body) values (%s, %s, %s)', \
-        [post_id, session['username'], body])
+        query_db('insert into comments (post_id, poster, body) values (%s, %s, %s)', \
+        (post_id, g.username, body))
         g.db.commit()
-        g.cur.execute('select last_insert_id()')
-        comment_id = g.cur.fetchone()[0]
+        comment_id = query_db('select last_insert_id()', one=True)[0]
         r_server.zadd(str(post_id) + ":comments", comment_id, 0)
-        r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
-        r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
-        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
+        redis_insert('comment', comment_id)
         return jsonify ({ 
             'authorized' : True,
             'success' : True,
@@ -167,40 +214,6 @@ def comment():
         return jsonify ({
             'authorized' : True,
             'success' : False })
-        
-@app.route('/x/<topic>/post', methods=['GET', 'POST'])
-def post(topic):
-    """Submit a post to a branch."""
-    if g.username == None:
-        return redirect(url_for('login')) 
-    error = None
-    if request.method == 'POST':
-        if request.form['subject'] != "":
-            body = request.form['body']
-            body = body if body != "" else None
-            url = request.form['url']
-            url = url if url != "" else None
-
-            g.cur.execute('insert into posts (url, topic, poster, subject, body) values (%s, %s, %s, %s, %s)', \
-            [url, topic, session['username'], request.form['subject'], body])
-            g.db.commit()
-            
-            # Get the post_id of the new post to use as a redis key
-            g.cur.execute('select last_insert_id()')
-            post_id = g.cur.fetchone()[0]
-            # Initial score is 0
-            r_server.zadd(topic + ":posts", post_id, 0)
-            # Initial number of upvotes and downvotes is zero 
-            r_server.set("post:" + str(post_id) + ":upvotes", 0)
-            r_server.set("post:" + str(post_id) + ":downvotes", 0)
-            # Time of post is now
-            r_server.set("post:" + str(post_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
-            # Store this post and it's score in the all:posts ordered list for fast front-page loads
-            r_server.zadd("all:posts", post_id, 0)
-
-            return redirect(url_for('branch', topic=topic))
-        error = "Invalid Post: Posts Must have Subject and Body" 
-    return render_template('post.html', topic=topic, error=error)
 
 @app.route('/upvote', methods=['POST'])
 def upvote():
@@ -221,35 +234,20 @@ def downvote():
     return jsonify({
         'downvotes' : r_server.get(vote_type + ":" + id + ":downvotes") })
 
-def generate_salt():
-    """Generate salt for secure password storage."""
-    chars = []
-    for i in range(8):
-        chars.append(random.choice(app.config['ALPHABET']))
-    return "".join(chars)
-
-def password_hash(password, salt):
-    salted_password = salt + password
-    hashed = hashlib.sha256(salted_password).hexdigest()
-    return hashed
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Login a user."""
-    # user is already logged in!
     if g.username != None:
         return redirect(url_for('main_page'))
     error = None
     if request.method == 'POST':
-        g.cur.execute('select * from users where username = %s', \
-            [request.form['username']])
-        raw_user_details = g.cur.fetchone()
-        if raw_user_details != None:
-            salt = raw_user_details[1]
-            stored_password_hash = raw_user_details[2]
-            if password_hash(request.form['password'], salt) == stored_password_hash:
-                session['username'] = raw_user_details[0]
-                g.cur.execute('select * from users')
+        user_details = query_db('select * from users where username=%s', \
+            (request.form['username']), True)
+        if user_details != None:
+            salt = user_details[1]
+            pass_hash = user_details[2]
+            if password_hash(request.form['password'], salt) == pass_hash:
+                session['username'] = user_details[0]
                 return redirect(url_for('main_page'))
         error = "Username or Password Invalid"
     return render_template('login.html', error=error)
@@ -264,24 +262,22 @@ def register():
     if request.method == 'POST':
         # register the user
         username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        username_exists = g.cur.execute('select %s in (select username from users)', [username])
-        username_exists = g.cur.fetchone()[0]
+        username_exisits = query_db('select %s in (select username from users)', (username), True)[0]
         if username_exists:
             error = "Username already in use"
         elif len(username) > 25:
             error = "Username is too long"
         else:
             # Username is valid
-            if password != confirm_password:
+            if request.form['password'] != request.form['confirm_password']:
                 error = "Invalid password"
             elif len(password) < 6:
                 error = "Password must be at least 6 characters"
             else:
                 salt = generate_salt()
-                hashed_password = password_hash(password, salt)
-                g.cur.execute('insert into users (username, salt, password_hash) values (%s, %s, %s)', [username, salt, hashed_password])
+                hashed = password_hash(password, salt)
+                query_db('insert into users (username, salt, password_hash) values (%s, %s, %s)', \
+                    (username, salt, hashed))
                 g.db.commit()
                 return redirect(url_for('login'))
     return render_template('register.html', error=error)
