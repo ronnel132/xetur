@@ -108,8 +108,27 @@ def branch(topic, before=None):
     has_next = before < r_server.zcount(topic + ":posts", -maxint, maxint)
     raw_posts = [fetch_post(post_id) for post_id in post_ids]
     posts = parse_posts(raw_posts)
+    g.cur.execute('select description from topics where topic=%s', [topic])
+    description = g.cur.fetchone()[0]
     return render_template('show_topic.html', topic=topic, posts=posts, before=before, \
-    has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'])
+    has_next=has_next, posts_per_page=app.config['POSTS_PER_PAGE'], \
+    description=description)
+
+@app.route('/x/addbranch', methods=['GET', 'POST'])
+def addbranch():
+    """Create a branch"""
+    if g.username == None:
+        return redirect(url_for('login'))
+    error = None
+    if request.method == 'POST':
+        bn = request.form['branch_name']
+        bd = request.form['branch_descrip']
+        if bn != "" or bd != "":
+            g.cur.execute('insert into topics values (%s, %s)', [bn, bd])
+            g.db.commit()
+            return redirect(url_for('main_page'))
+        error = "Branch must have a name and a description"
+    return render_template('addbranch.html', error=error)
 
 @app.route('/x/<topic>/<post_id>')
 def show_post(topic, post_id):

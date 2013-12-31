@@ -4,7 +4,8 @@ drop table if exists users;
 drop table if exists topics;
 
 create table topics (
-    topic varchar(30) primary key
+    topic varchar(30) primary key,
+    description text not null
 );
 
 create table users (
@@ -32,7 +33,7 @@ create table comments (
     body text not null
 );
 
-insert into topics values ('science');
-insert into topics values ('gaming');
-insert into topics values ('funny');
-insert into topics values ('misc');
+insert into topics values ('science', 'Submissions and discussions on scientific topics');
+insert into topics values ('gaming', 'A branch for anything related to videogames');
+insert into topics values ('funny', 'A place for humorous things');
+insert into topics values ('misc', 'Everything else');

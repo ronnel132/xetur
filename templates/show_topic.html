@@ -9,8 +9,11 @@
         <div id=topic_sidebar>
             <a href="{{ url_for('post', topic=topic) }}">
                 <p class=topic_post>⊗ Submit a post.</p>
-                <hr class=sidebar_divider></hr>
             </a>
+            <hr class=sidebar_divider></hr>
+            <p class=sidebar_text>
+                {{ description }}
+            </p>
             <div style="height: 1em"></div>
         </div>
         <div id=topic_content>

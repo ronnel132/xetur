@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class=post>
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+        <h1>add a branch</h1>
+        <form action="{{ url_for('addbranch') }}" method=post>
+            branch name:<br><input type="text" size=50 name="branch_name"><br>
+            description:<br><textarea rows=5 cols=50 name=branch_descrip></textarea><br>
+            <br><input type="submit" value="SUBMIT">
+        </form>
+    </div>
+{% endblock %}
