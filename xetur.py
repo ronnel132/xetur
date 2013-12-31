@@ -87,9 +87,10 @@ def clean_url(url):
     return (url if 'http://' in url else 'http://' + url) if url != None else None
 
 def parse_form(form):
+    new_form = {}
     for v in form:
-        form[v] = None if form[v] == "" else form[v]
-    return form
+        new_form[v] = None if form[v] == "" else form[v]
+    return new_form
 
 def generate_salt():
     """Generate salt for secure password storage."""
