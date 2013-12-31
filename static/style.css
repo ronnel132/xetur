@@ -12,9 +12,7 @@
 }
 
 html {
-    background: url(
-    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAKklEQVQIW2N8+ujafwYoePNgDwMjTADEEVFwgQjAOCCFjBcPTfoPkoEBAJRXFv1MYRsDAAAAAElFTkSuQmCC
-    );
+    background-image: url('images/escheresque.png');
 }
 
 .clear {

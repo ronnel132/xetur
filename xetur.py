@@ -138,7 +138,7 @@ def comment():
         r_server.zadd(str(post_id) + ":comments", comment_id, 0)
         r_server.set("comment:" + str(comment_id) + ":upvotes", 0)
         r_server.set("comment:" + str(comment_id) + ":downvotes", 0)
-        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%s"))
+        r_server.set("comment:" + str(comment_id) + ":time", datetime.now().strftime("%H:%M:%S %Y-%m-%d"))
         return jsonify ({ 
             'authorized' : True,
             'success' : True,
