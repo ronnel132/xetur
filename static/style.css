@@ -161,7 +161,7 @@ html {
     font-family: 'Nixie One', cursive;
 }
 
-#topic_container { 
+.topic_container { 
     clear: both;
     margin-top: 0.0em; 
     margin-bottom: 2em; 
@@ -169,7 +169,7 @@ html {
     width: 90%;
 } 
 
-#topic_content {
+.topic_content {
     margin-left: 1%; 
     margin-right: 20%; 
     width: 76.5%;
@@ -178,35 +178,28 @@ html {
     border-style: solid;
     border-color: #d1c39b;
     border-width: 1px;
-    box-shadow: 0 0 40px 1px #C8C8C8; 
 }
 
-#topic_content ul { 
+.topic_content ul { 
     list-style-type: none; 
 }
 
-#topic_sidebar { 
+.topic_sidebar { 
     float: right; 
-    width: 19.5%; 
+    width: 17%; 
     background: #d29623;
-    margin-bottom: 1em; 
     margin-right: 1%; 
+    padding: 1em 1em;
     border-radius: 5px;
 }
 
-#topic_sidebar a:link { 
+.topic_sidebar a:link { 
     color: white; 
     border-radius: 2px; 
 }
 
-#topic_sidebar a:visited { 
+.topic_sidebar a:visited { 
     color: white; 
-}
-
-.topic_post { 
-    margin-left: 1.2em; 
-    margin-top: 1em; 
-    margin-bottom: 0.5em;
 }
 
 .nav-buttons { 
@@ -237,26 +230,19 @@ html {
 }
 
 .sidebar_text_header { 
-    color: white; 
-    margin-left: 1.2em; 
-    margin-right: 1.2em; 
-    margin-top: 1em; 
-    margin-bottom: 0.3em; 
     font-family: "Alegreya Sans", sans-serif; 
-    color: #400040
+    text-align: center;
+    margin-top: 0.4em;
+    font-weight: bold;
 }
 
 .sidebar_text { 
     color: white; 
-    margin-left: 1.2em; 
-    margin-right: 1.2em;
-    margin-top: 0.8em; 
-    margin-bottom: 0.5em; 
     font-size: 0.9em 
 }
 
 .sidebar_divider { 
-    margin-left: 10%; 
+    margin: 0.4em 10%;
     width: 80%; 
     height: 1px; 
     color: white;
@@ -272,7 +258,6 @@ html {
     border-style: solid;
     border-color: #d1c39b;
     border-width: 1px;
-    box-shadow: 0 0 40px 1px #C8C8C8; 
     margin-top: 1em;
     margin-bottom: 2em;
 }

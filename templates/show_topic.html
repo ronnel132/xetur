@@ -5,18 +5,17 @@
             <h2>{{ topic }}</h2>
         </a>
     </div>
-    <div id=topic_container>
-        <div id=topic_sidebar>
+    <div class=topic_container>
+        <div class=topic_sidebar>
             <a href="{{ url_for('post', topic=topic) }}">
-                <p class=topic_post>⊗ Submit a post.</p>
+                <p class=sidebar_text_header>⊗ Submit a post.</p>
             </a>
             <hr class=sidebar_divider></hr>
             <p class=sidebar_text>
                 {{ description }}
             </p>
-            <div style="height: 1em"></div>
         </div>
-        <div id=topic_content>
+        <div class=topic_content>
             {% include "show_posts.html" %}
         </div>
     </div>

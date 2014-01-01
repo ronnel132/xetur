@@ -187,7 +187,7 @@ def post(topic):
             r_server.zadd(topic + ":posts", post_id, 0)
             redis_insert('post', post_id)
             r_server.zadd("all:posts", post_id, 0)
-            return redirect(url_for('branch', topic=topic))
+            return redirect(url_for('show_post', topic=topic, post_id=post_id))
         error = "Invalid Post: Posts Must have Subject and Body" 
     return render_template('post.html', topic=topic, error=error)
 
