@@ -26,6 +26,6 @@ db.close()
 
 # Also delete redis keys
 
-r = redis.Redis(host="albacore.redistogo.com", port=9770, password="1b7723de2133362287c1ca0eb0550628")
+r = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'], password=app.config['REDIS_PASS'])
 r.flushdb()
 r.flushall()
