@@ -146,7 +146,10 @@ def addbranch():
     if request.method == 'POST':
         bn = request.form['branch_name']
         bd = request.form['branch_descrip']
-        if bn != "" or bd != "":
+        name_exists = query_db('select %s in (select topic from topics)', (bn), True)[0]
+        if name_exists: 
+            error = "Branch already exists"
+        elif bn != "" or bd != "":
             query_db('insert into topics values (%s, %s)', (bn, bd))
             g.db.commit()
             return redirect(url_for('main_page'))
