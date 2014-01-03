@@ -266,7 +266,7 @@ def register():
     if request.method == 'POST':
         # register the user
         username = request.form['username']
-        username_exisits = query_db('select %s in (select username from users)', (username), True)[0]
+        username_exists = query_db('select %s in (select username from users)', (username), True)[0]
         if username_exists:
             error = "Username already in use"
         elif len(username) > 25:
