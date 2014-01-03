@@ -139,8 +139,8 @@ html {
 .subbranch_header { 
     margin-top: 1.5em; 
     margin-bottom: 1.5em;
-    margin-left: 5%;
-    width: 90%;
+    margin-left: 10%;
+    width: 80%;
     background: #32425c;
     padding-top: 0.6em;
     padding-bottom: 0.2em;
@@ -165,8 +165,8 @@ html {
     clear: both;
     margin-top: 0.0em; 
     margin-bottom: 2em; 
-    margin-left: 5%;
-    width: 90%;
+    margin-left: 10%;
+    width: 80%;
 } 
 
 .topic_content {
@@ -235,7 +235,7 @@ html {
 
 .sidebar_text { 
     color: white; 
-    font-size: 0.9em 
+    font-size: 0.8em 
 }
 
 .sidebar_divider { 
