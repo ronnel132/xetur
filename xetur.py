@@ -273,7 +273,8 @@ def register():
             error = "Username is too long"
         else:
             # Username is valid
-            if request.form['password'] != request.form['confirm_password']:
+            password = request.form['password']
+            if password != request.form['confirm_password']:
                 error = "Invalid password"
             elif len(password) < 6:
                 error = "Password must be at least 6 characters"
