@@ -13,8 +13,12 @@
                 </a>
                 {% endif %}
                 <div class=post_descrip>
-                    <p class=descrip_entity>Submitted {{post.time}} ago </p>
-                    <p class=descrip_entity>by {{post.poster}} </p>
+                    <p class=descrip_entity>Submitted {{post.time}} ago by </p>
+                    <p class=descrip_entity>
+                        <a href="{{url_for('show_user_posts', username=post.poster)}}">
+                            {{post.poster}}
+                        </a>
+                    </p>
                     <p class=descrip_entity>to 
                         <a href="{{url_for('branch', topic=post.topic)}}">
                             {{post.topic}}

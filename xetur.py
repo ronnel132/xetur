@@ -244,13 +244,13 @@ def comment():
 @app.route('/u/<username>/posts')
 def show_user_posts(username):
     """View a specific user's posting activity."""
-    posts = parse_posts(query_db('select * from posts where poster=%s order by time', (username)))
+    posts = parse_posts(query_db('select * from posts where poster=%s order by time desc', (username)))
     return render_template('show_user_posts.html', posts=posts)
 
 @app.route('/u/<username>/comments')
 def show_user_comments(username):
     """View a specific user's commenting activity."""
-    comments = parse_comments(query_db('select * from comments where poster=%s order by time', (username)))
+    comments = parse_comments(query_db('select * from comments where poster=%s order by time desc' (username)))
     return render_template('show_user_comments.html', comments=comments)
 
 @app.route('/upvote', methods=['POST'])
