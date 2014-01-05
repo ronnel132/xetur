@@ -136,7 +136,7 @@ html {
     border-width: 1px;
 }
 
-.subbranch_header { 
+.page_header { 
     margin-top: 1.5em; 
     margin-bottom: 1.5em;
     margin-left: 10%;
@@ -150,7 +150,7 @@ html {
     box-shadow:         inset 0 0 10px #3D3D3D;
 }
 
-.subbranch_header h2 { 
+.page_header h2 { 
     color: white; 
     margin: 0; 
     padding-top: 0.0em; 
@@ -159,6 +159,20 @@ html {
     text-align: center; 
     margin-bottom: 0.5em;
     font-family: 'Nixie One', cursive;
+}
+
+.user_content {
+    width: 80%;
+    background: white;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #d1c39b;
+    border-width: 1px;
+    margin-left: 10%;
+}
+
+.user_content ul {
+    list-style-type: none;
 }
 
 .topic_container { 

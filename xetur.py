@@ -82,15 +82,15 @@ def time_since(date):
 
 # Parse posts into a list of dictionaries for easy access to post attributes
 def parse_posts(posts):
-    parsed = [dict(post_id=post[0], url=clean_url(post[1]), topic=post[2], poster=post[3], subject=post[4], \
-    body=post[5], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
+    parsed = [dict(post_id=post[0], url=clean_url(post[2]), topic=post[3], poster=post[4], subject=post[5], \
+    body=post[6], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
     downvotes=r_server.get("post:" + str(post[0]) + ":downvotes"), \
     time=time_since(r_server.get("post:" + str(post[0]) + ":time")), \
     comment_count=r_server.zcard(str(post[0])+":comments")) for post in posts]
     return parsed
 
 def parse_comments(comments):
-    parsed = [dict(comment_id=cmnt[0], post_id=cmnt[1], poster=cmnt[2], body=cmnt[3], \
+    parsed = [dict(comment_id=cmnt[0], post_id=cmnt[2], poster=cmnt[3], body=cmnt[4], \
     upvotes=r_server.get("comment:"+str(cmnt[0])+":upvotes"), \
     downvotes=r_server.get("comment:"+str(cmnt[0])+":downvotes"), \
     time=time_since(r_server.get("comment:" + str(cmnt[0]) +":time"))) \
@@ -165,7 +165,7 @@ def addbranch():
         return redirect(url_for('login'))
     error = None
     if request.method == 'POST':
-        bn = request.form['branch_name']
+        bn = request.form['branch_name'].lower()
         bd = request.form['branch_descrip']
         name_exists = query_db('select %s in (select topic from topics)', (bn), True)[0]
         if name_exists: 
@@ -188,6 +188,7 @@ def show_post(topic, post_id):
     return render_template('show_post.html', comments=comments, post=post)
 
 def redis_insert(insert_type, insert_id):
+    """Initialize data in Redis for new posts and comments."""
     now = datetime.utcnow().strftime('%H:%M:%S %Y-%m-%d')
     r_server.set(insert_type + ':' + str(insert_id) + ':upvotes', 0)
     r_server.set(insert_type + ':' + str(insert_id) + ':downvotes', 0)
@@ -239,6 +240,18 @@ def comment():
         return jsonify ({
             'authorized' : True,
             'success' : False })
+
+@app.route('/u/<username>/posts')
+def show_user_posts(username):
+    """View a specific user's posting activity."""
+    posts = parse_posts(query_db('select * from posts where poster=%s order by time', (username)))
+    return render_template('show_user_posts.html', posts=posts)
+
+@app.route('/u/<username>/comments')
+def show_user_comments(username):
+    """View a specific user's commenting activity."""
+    comments = parse_comments(query_db('select * from comments where poster=%s order by time', (username)))
+    return render_template('show_user_comments.html', comments=comments)
 
 @app.route('/upvote', methods=['POST'])
 def upvote():
