@@ -61,18 +61,39 @@ def teardown_request(exception):
     cur.close() if cur != None else None
     db.close() if db != None else None
 
+def time_since(date):
+    date = datetime.strptime(date, "%H:%M:%S %Y-%m-%d")
+    td = datetime.utcnow() - date
+    days = td.days
+    hours = td.seconds // 3600
+    mins = (td.seconds // 60) % 60
+    print date, days, hours, mins
+    if hours == 0:
+        if mins == 1:
+            return "1 minute"
+        return "%s minutes" % str(mins)
+    if days == 0:
+        if hours == 1:
+            return "1 hour"
+        return "%s hours" % str(hours)
+    if days == 1:
+        return "1 day"
+    return "%s days" % str(days)
+
 # Parse posts into a list of dictionaries for easy access to post attributes
 def parse_posts(posts):
     parsed = [dict(post_id=post[0], url=clean_url(post[1]), topic=post[2], poster=post[3], subject=post[4], \
     body=post[5], upvotes=r_server.get("post:" + str(post[0]) + ":upvotes"), \
     downvotes=r_server.get("post:" + str(post[0]) + ":downvotes"), \
+    time=time_since(r_server.get("post:" + str(post[0]) + ":time")), \
     comment_count=r_server.zcard(str(post[0])+":comments")) for post in posts]
     return parsed
 
 def parse_comments(comments):
     parsed = [dict(comment_id=cmnt[0], post_id=cmnt[1], poster=cmnt[2], body=cmnt[3], \
     upvotes=r_server.get("comment:"+str(cmnt[0])+":upvotes"), \
-    downvotes=r_server.get("comment:"+str(cmnt[0])+":downvotes")) \
+    downvotes=r_server.get("comment:"+str(cmnt[0])+":downvotes"), \
+    time=time_since(r_server.get("comment:" + str(cmnt[0]) +":time"))) \
     for cmnt in comments]
     return parsed
 
@@ -167,7 +188,7 @@ def show_post(topic, post_id):
     return render_template('show_post.html', comments=comments, post=post)
 
 def redis_insert(insert_type, insert_id):
-    now = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
+    now = datetime.utcnow().strftime('%H:%M:%S %Y-%m-%d')
     r_server.set(insert_type + ':' + str(insert_id) + ':upvotes', 0)
     r_server.set(insert_type + ':' + str(insert_id) + ':downvotes', 0)
     r_server.set(insert_type + ':' + str(insert_id) + ':time', now)

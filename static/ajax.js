@@ -60,7 +60,7 @@ function comment(topic, postId) {
                 comment.innerHTML = $('textarea[name="comment_text"]').val();
                 var comment_id = response['comment_id'];
                 var submitted_by = document.createElement("p");
-                submitted_by.innerHTML = "Submitted by ".concat(response['username']);
+                submitted_by.innerHTML = "Submitted just now by ".concat(response['username']);
                 submitted_by.className = "descrip_entity";
                 var upvotes = createCommentDescrip('0', 'upvote', comment_id);
                 var downvotes = createCommentDescrip('0', 'downvote', comment_id);

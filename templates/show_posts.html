@@ -13,7 +13,13 @@
                 </a>
                 {% endif %}
                 <div class=post_descrip>
-                    <p class=descrip_entity>Submitted by {{post.poster}}</p>
+                    <p class=descrip_entity>Submitted {{post.time}} ago </p>
+                    <p class=descrip_entity>by {{post.poster}} </p>
+                    <p class=descrip_entity>to 
+                        <a href="{{url_for('branch', topic=post.topic)}}">
+                            {{post.topic}}
+                        </a>
+                    </p>
                     <p class=descrip_entity>|</p>
                     <p class=descrip_entity id="post_upvote{{post.post_id}}">{{post.upvotes}}</p>
                     <a class="descrip_entity votebtn{{post.post_id}}" href="javascript:upvote('#post_upvote{{post.post_id}}', '{{post.post_id}}', '.votebtn{{post.post_id}}', 'post');">
