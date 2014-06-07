@@ -245,7 +245,7 @@ def comment():
 def show_user_posts(username):
     """View a specific user's posting activity."""
     posts = parse_posts(query_db('select * from posts where poster=%s order by time desc', (username)))
-    return render_template('show_user_posts.html', posts=posts)
+    return render_template('show_user_posts.html', posts=posts, show_post_user=username)
 
 @app.route('/u/<username>/comments')
 def show_user_comments(username):
