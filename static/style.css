@@ -14,7 +14,8 @@
 }
 
 html {
-    background-image: url('images/escheresque.png'); 
+    /* background-image: url('images/escheresque.png'); */
+    background: white;
 }
 
 .clear {
@@ -28,19 +29,20 @@ html {
 .logo {  
     font-weight: lighter;
     font-family: 'Copse', serif; 
-    font-size: 45px;
+    font-size: 70px;
     text-align: center;
     color: white;
-    margin-top: 0.6em;
-    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    margin-bottom: 0.1em;
 }
 
 .navbar { 
-    background-image: url('images/denim.png');
+    /* background-image: url('images/denim.png'); */
+    background: #990000;
     padding: 0.2em 0.2em;
-    -moz-box-shadow:    inset 0 0 12px #3D3D3D;
+    /*-moz-box-shadow:    inset 0 0 12px #3D3D3D;
     -webkit-box-shadow: inset 0 0 12px #3D3D3D;
-    box-shadow:         inset 0 0 12px #3D3D3D;
+    box-shadow:         inset 0 0 12px #3D3D3D;*/
 }
 
 .navbar li { 
@@ -72,7 +74,9 @@ html {
 }
 
 .posts {
-    margin-top: 1em;
+    /*margin-top: 1em;*/
+    padding-top: 1em;
+    padding-bottom: 0.5em;
 }
 
 .branch_post {
@@ -110,11 +114,7 @@ html {
 
 .post { 
     background: white; 
-    border-style: solid;
-    border-width: 1px;
-    border-color: #d1c39b;
-    border-radius: 5px;
-    width: 50%;
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
    /* margin-top: 2em; 
@@ -146,21 +146,18 @@ html {
 }
 
 .page_header { 
-    margin-top: 1.5em; 
-    margin-bottom: 1.0em;
     /*margin-left: 10%; */ 
+    margin-bottom: 1em;
     width: 960px;
-    background: #32425c;
+    background: white;
     padding-top: 0.6em;
     padding-bottom: 0.2em;
-    border-radius: 5px;
-    -moz-box-shadow:    inset 0 0 10px #3D3D3D;
+    border-bottom: 1px solid #cccccc;
     -webkit-box-shadow: inset 0 0 10px #3D3D3D;
-    box-shadow:         inset 0 0 10px #3D3D3D;
 }
 
 .page_header h2 { 
-    color: white; 
+    color: black; 
     margin: 0; 
     padding-top: 0.0em; 
     padding-bottom: 0.0em; 
@@ -186,6 +183,7 @@ html {
 
 .topic_container { 
     clear: both;
+    margin-bottom: 1em;
     /*margin-top: 0.0em; 
     margin-bottom: 2em; 
     margin-left: 10%;
@@ -193,12 +191,10 @@ html {
 } 
 
 .topic_content {
-    width: 75%;
+    width: 78%;
     background: white;
+    box-shadow: 0px 5px 8px #dddddd;
     border-radius: 5px;
-    border-style: solid;
-    border-color: #d1c39b;
-    border-width: 1px;
 }
 
 .topic_content ul { 
@@ -208,9 +204,9 @@ html {
 .topic_sidebar { 
     float: right; 
     width: 20%; 
-    background: #d29623;
-    padding: 1em 1em;
-    border-radius: 5px;
+    background: #990000;
+    padding: 1em 0em;
+    border-radius:2px;
 }
 
 .topic_sidebar a:link { 
@@ -232,13 +228,9 @@ html {
 }
 
 .nextprev { 
-    margin: 0.4em 0.4em; 
+    margin-bottom: 1em;
     background: white;
-    border-style: solid; 
-    border-width: 1px;
-    border-radius: 3px;
-    border-color: #d1c39b;
-    padding: 0.2em 0.2em;
+    border-bottom: 1px solid #dddddd;
 }
 
 .nextprev a:link {
@@ -251,6 +243,7 @@ html {
 
 .sidebar_text_header { 
     font-family: "Alegreya Sans", sans-serif; 
+    color: white;
     text-align: center;
     margin-top: 0.4em;
     font-weight: bold;
@@ -258,7 +251,8 @@ html {
 
 .sidebar_text { 
     color: white; 
-    font-size: 0.8em 
+    font-size: 0.8em;
+    margin: 1em;
 }
 
 .sidebar_divider { 
